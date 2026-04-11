@@ -1,0 +1,38 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('payments', function (Blueprint $table) {
+            $table->increments('payment_id');
+            $table->unsignedInteger('order_id');
+            $table->unsignedInteger('admin_id');
+            $table->enum('payment_method', ['cash', 'debit_card', 'credit_card', 'qris', 'transfer'])
+                  ->default('cash');
+            $table->enum('payment_status', ['pending', 'paid', 'failed', 'refunded'])
+                  ->default('pending');
+            $table->timestamp('paid_at')->nullable();
+            $table->timestamps();
+
+            $table->foreign('order_id')
+                  ->references('order_id')
+                  ->on('orders')
+                  ->onDelete('restrict');
+
+            $table->foreign('admin_id')
+                  ->references('admin_id')
+                  ->on('admins')
+                  ->onDelete('restrict');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('payments');
+    }
+};

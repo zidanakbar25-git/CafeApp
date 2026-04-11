@@ -1,0 +1,36 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
+class SubCategorySeeder extends Seeder
+{
+    public function run(): void
+    {
+        // category_id is based on CategorySeeder insertion order:
+        // 1 = Food | 2 = Beverage | 3 = Dessert | 4 = Snack
+
+        $map = [
+            1 => ['Rice Dishes', 'Noodle Dishes', 'Bread & Toast', 'Pasta'],
+            2 => ['Hot Coffee', 'Cold Coffee', 'Non-Coffee', 'Juice & Smoothies', 'Tea'],
+            3 => ['Cake', 'Ice Cream', 'Pudding'],
+            4 => ['Fries & Chips', 'Finger Food'],
+        ];
+
+        $rows = [];
+        foreach ($map as $categoryId => $subs) {
+            foreach ($subs as $name) {
+                $rows[] = [
+                    'category_id' => $categoryId,
+                    'name'        => $name,
+                    'created_at'  => now(),
+                    'updated_at'  => now(),
+                ];
+            }
+        }
+
+        DB::table('sub_categories')->insert($rows);
+    }
+}
