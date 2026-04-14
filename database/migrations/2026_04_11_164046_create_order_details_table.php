@@ -8,24 +8,22 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('order_details', function (Blueprint $table) {
+        Schema::create('order_details', function ($table) {
             $table->increments('detail_id');
+
             $table->unsignedInteger('order_id');
             $table->unsignedInteger('menu_id');
-            $table->unsignedInteger('quantity');
+
+            $table->integer('quantity');
             $table->decimal('unit_price', 12, 2);
             $table->decimal('subtotal', 12, 2);
+
+            $table->enum('status', ['pending', 'cooking', 'served'])->default('pending');
+
             $table->timestamps();
 
-            $table->foreign('order_id')
-                  ->references('order_id')
-                  ->on('orders')
-                  ->onDelete('cascade');
-
-            $table->foreign('menu_id')
-                  ->references('menu_id')
-                  ->on('menus')
-                  ->onDelete('restrict');
+            $table->foreign('order_id')->references('order_id')->on('orders')->onDelete('cascade');
+            $table->foreign('menu_id')->references('menu_id')->on('menus');
         });
     }
 
