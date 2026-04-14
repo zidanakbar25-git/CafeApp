@@ -12,7 +12,7 @@ return new class extends Migration
             $table->increments('admin_id');
             $table->string('username', 100)->unique();
             $table->string('password_hash');
-            $table->enum('role', ['Manager', 'cashier'])->default('cashier');
+            $table->enum('role', [ 'Manager', 'cashier'])->default('cashier');
             $table->timestamps();
         });
     }

@@ -12,23 +12,16 @@ class AdminSeeder extends Seeder
     {
         DB::table('admins')->insert([
             [
-                'username'      => 'superadmin',
-                'password_hash' => Hash::make('superadmin123'),
-                'role'          => 'super_admin',
+                'username'      => 'manager',
+                'password_hash' => Hash::make('manager123'),
+                'role'          => 'manager',
                 'created_at'    => now(),
                 'updated_at'    => now(),
             ],
             [
-                'username'      => 'cashier1',
+                'username'      => 'cashier',
                 'password_hash' => Hash::make('cashier123'),
                 'role'          => 'cashier',
-                'created_at'    => now(),
-                'updated_at'    => now(),
-            ],
-            [
-                'username'      => 'staff1',
-                'password_hash' => Hash::make('staff123'),
-                'role'          => 'staff',
                 'created_at'    => now(),
                 'updated_at'    => now(),
             ],

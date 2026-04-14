@@ -13,10 +13,8 @@ class SubCategorySeeder extends Seeder
         // 1 = Food | 2 = Beverage | 3 = Dessert | 4 = Snack
 
         $map = [
-            1 => ['Rice Dishes', 'Noodle Dishes', 'Bread & Toast', 'Pasta'],
-            2 => ['Hot Coffee', 'Cold Coffee', 'Non-Coffee', 'Juice & Smoothies', 'Tea'],
-            3 => ['Cake', 'Ice Cream', 'Pudding'],
-            4 => ['Fries & Chips', 'Finger Food'],
+            1 => ['Main Course', 'Dessert'], // Food
+            2 => ['Coffee', 'Non Coffee'],   // Drink
         ];
 
         $rows = [];

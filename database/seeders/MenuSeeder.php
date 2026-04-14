@@ -83,7 +83,7 @@ class MenuSeeder extends Seeder
         $rows = [];
         foreach ($menus as [$subId, $name, $desc, $price]) {
             $rows[] = [
-                'sub_id'      => $subId,
+                'sub_category_id' => $subId,
                 'name'        => $name,
                 'description' => $desc,
                 'price'       => $price,

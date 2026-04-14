@@ -13,8 +13,8 @@ return new class extends Migration
             $table->unsignedInteger('table_id');
             $table->string('order_code', 50)->unique();
             $table->string('customer_name', 150)->nullable();
-            $table->enum('status', ['menunggu', 'diproses', 'selesai', 'dibatalkan'])
-                  ->default('menunggu');
+            $table->enum('status', ['pending', 'preparing', 'confirmed', 'completed'])
+            ->default('pending');
             $table->decimal('total_amount', 12, 2)->default(0);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();
