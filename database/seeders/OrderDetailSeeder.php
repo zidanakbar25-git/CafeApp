@@ -9,42 +9,53 @@ class OrderDetailSeeder extends Seeder
 {
     public function run(): void
     {
-        // [order_id, menu_id, quantity, unit_price]
-        // menu_id references MenuSeeder insertion order
+        // ambil semua menu (name => id)
+        $menus = DB::table('menus')->pluck('menu_id', 'name');
+
         $details = [
-            // Order 1 – Budi Santoso
-            [1,  1, 2, 35000],  // Nasi Goreng Spesial x2
-            [1, 12, 2, 30000],  // Cafe Latte x2
-            [1, 31, 1, 25000],  // French Fries x1
+            // Order 1
+            [1, 'Nasi Goreng Spesial', 2],
+            [1, 'Cafe Latte', 2],
+            [1, 'French Toast', 1],
 
-            // Order 2 – Siti Rahayu
-            [2,  4, 1, 32000],  // Mie Goreng Spesial x1
-            [2, 14, 1, 32000],  // Iced Latte x1
-            [2, 25, 1, 42000],  // Cheesecake Slice x1
+            // Order 2
+            [2, 'Mie Goreng Spesial', 1],
+            [2, 'Iced Latte', 1],
+            [2, 'Cheesecake Slice', 1],
 
-            // Order 3 – Ahmad Fauzi
-            [3,  8, 1, 45000],  // Spaghetti Bolognese x1
-            [3, 15, 1, 35000],  // Cold Brew x1
-            [3, 16, 1, 32000],  // Matcha Latte x1
+            // Order 3
+            [3, 'Spaghetti Bolognese', 1],
+            [3, 'Cold Brew', 1],
+            [3, 'Matcha Latte', 1],
 
-            // Order 4 – Dewi Lestari
-            [4,  7, 1, 35000],  // Avocado Toast x1
-            [4, 17, 1, 32000],  // Taro Latte x1
+            // Order 4
+            [4, 'Avocado Toast', 1],
+            [4, 'Taro Latte', 1],
 
-            // Order 5 – Rizky Pratama
-            [5,  3, 2, 38000],  // Nasi Ayam Geprek x2
-            [5,  9, 1, 48000],  // Carbonara x1
-            [5, 21, 1, 38000],  // Mixed Berry Smoothie x1
+            // Order 5
+            [5, 'Nasi Ayam Geprek', 2],
+            [5, 'Carbonara', 1],
+            [5, 'Mixed Berry Smoothie', 1],
         ];
 
         $rows = [];
-        foreach ($details as [$orderId, $menuId, $qty, $unitPrice]) {
+
+        foreach ($details as [$orderId, $menuName, $qty]) {
+
+            // cari menu_id berdasarkan nama
+            $menuId = $menus[$menuName] ?? null;
+
+            if (!$menuId) continue; // skip kalau tidak ketemu
+
+            // ambil harga dari database (biar selalu sync)
+            $menu = DB::table('menus')->where('menu_id', $menuId)->first();
+
             $rows[] = [
                 'order_id'   => $orderId,
                 'menu_id'    => $menuId,
                 'quantity'   => $qty,
-                'unit_price' => $unitPrice,
-                'subtotal'   => $qty * $unitPrice,
+                'unit_price' => $menu->price,
+                'subtotal'   => $qty * $menu->price,
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
