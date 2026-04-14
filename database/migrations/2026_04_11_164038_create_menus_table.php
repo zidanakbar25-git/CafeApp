@@ -8,20 +8,19 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('menus', function (Blueprint $table) {
+        Schema::create('menus', function ($table) {
             $table->increments('menu_id');
             $table->unsignedInteger('sub_id');
-            $table->string('name', 150);
+
+            $table->string('name');
             $table->text('description')->nullable();
             $table->decimal('price', 12, 2);
             $table->string('image_url')->nullable();
             $table->boolean('is_active')->default(true);
-            $table->timestamps();
 
-            $table->foreign('sub_id')
-                  ->references('sub_id')
-                  ->on('sub_categories')
-                  ->onDelete('cascade');
+            $table->foreign('sub_id')->references('sub_id')->on('sub_categories')->onDelete('cascade');
+
+            $table->timestamps();
         });
     }
 

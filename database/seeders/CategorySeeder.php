@@ -11,9 +11,8 @@ class CategorySeeder extends Seeder
     {
         DB::table('categories')->insert([
             ['name' => 'Food',     'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Beverage', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Dessert',  'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Snack',    'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Drink', 'created_at' => now(), 'updated_at' => now()],
+           
         ]);
     }
 }

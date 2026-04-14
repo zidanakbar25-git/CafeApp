@@ -8,22 +8,30 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('orders', function (Blueprint $table) {
+        Schema::create('orders', function ($table) {
             $table->increments('order_id');
             $table->unsignedInteger('table_id');
-            $table->string('order_code', 50)->unique();
-            $table->string('customer_name', 150)->nullable();
-            $table->enum('status', ['menunggu', 'diproses', 'selesai', 'dibatalkan'])
-                  ->default('menunggu');
-            $table->decimal('total_amount', 12, 2)->default(0);
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->nullable();
 
-            $table->foreign('table_id')
-                  ->references('table_id')
-                  ->on('cafe_tables')
-                  ->onDelete('restrict');
-        });
+            $table->string('order_code')->unique();
+            $table->string('customer_name')->nullable();
+
+            $table->enum('status', [
+                'menunggu_pembayaran',
+                'dibayar',
+                'diproses',
+                'dibatalkan',
+                'selesai'
+            ])->default('menunggu_pembayaran');
+
+            $table->decimal('total_amount', 12, 2)->default(0);
+
+            $table->timestamp('paid_at')->nullable();
+            $table->timestamp('completed_at')->nullable();
+
+            $table->timestamps();
+
+            $table->foreign('table_id')->references('table_id')->on('cafe_tables');
+});
     }
 
     public function down(): void

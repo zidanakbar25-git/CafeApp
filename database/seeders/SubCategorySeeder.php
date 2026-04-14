@@ -9,27 +9,38 @@ class SubCategorySeeder extends Seeder
 {
     public function run(): void
     {
-        // category_id is based on CategorySeeder insertion order:
-        // 1 = Food | 2 = Beverage | 3 = Dessert | 4 = Snack
+        $foodId = DB::table('categories')->where('name', 'Food')->value('category_id');
+        $drinkId = DB::table('categories')->where('name', 'Drink')->value('category_id');
 
-        $map = [
-            1 => ['Rice Dishes', 'Noodle Dishes', 'Bread & Toast', 'Pasta'],
-            2 => ['Hot Coffee', 'Cold Coffee', 'Non-Coffee', 'Juice & Smoothies', 'Tea'],
-            3 => ['Cake', 'Ice Cream', 'Pudding'],
-            4 => ['Fries & Chips', 'Finger Food'],
+        $rows = [
+            // Food
+            [
+                'category_id' => $foodId,
+                'name' => 'Main Course',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'category_id' => $foodId,
+                'name' => 'Dessert',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            // Drink
+            [
+                'category_id' => $drinkId,
+                'name' => 'Coffee',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'category_id' => $drinkId,
+                'name' => 'Non-Coffee',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ];
-
-        $rows = [];
-        foreach ($map as $categoryId => $subs) {
-            foreach ($subs as $name) {
-                $rows[] = [
-                    'category_id' => $categoryId,
-                    'name'        => $name,
-                    'created_at'  => now(),
-                    'updated_at'  => now(),
-                ];
-            }
-        }
 
         DB::table('sub_categories')->insert($rows);
     }

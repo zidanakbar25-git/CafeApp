@@ -8,27 +8,23 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('payments', function (Blueprint $table) {
+        Schema::create('payments', function ($table) {
             $table->increments('payment_id');
+
             $table->unsignedInteger('order_id');
             $table->unsignedInteger('admin_id');
-            $table->enum('payment_method', ['cash', 'debit_card', 'credit_card', 'qris', 'transfer'])
-                  ->default('cash');
-            $table->enum('payment_status', ['pending', 'paid', 'failed', 'refunded'])
-                  ->default('pending');
+
+            $table->enum('payment_method', ['cash', 'credit_card', 'transfer']);
+
+            $table->enum('payment_status', ['pending', 'paid', 'failed', 'refunded'])->default('pending');
+
             $table->timestamp('paid_at')->nullable();
+
             $table->timestamps();
 
-            $table->foreign('order_id')
-                  ->references('order_id')
-                  ->on('orders')
-                  ->onDelete('restrict');
-
-            $table->foreign('admin_id')
-                  ->references('admin_id')
-                  ->on('admins')
-                  ->onDelete('restrict');
-        });
+            $table->foreign('order_id')->references('order_id')->on('orders');
+            $table->foreign('admin_id')->references('admin_id')->on('admins');
+});
     }
 
     public function down(): void
