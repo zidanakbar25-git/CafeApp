@@ -16,12 +16,11 @@ return new class extends Migration
             $table->string('customer_name')->nullable();
 
             $table->enum('status', [
-                'menunggu_pembayaran',
-                'dibayar',
+                'menunggu',
                 'diproses',
                 'dibatalkan',
                 'selesai'
-            ])->default('menunggu_pembayaran');
+            ])->default('menunggu');
 
             $table->decimal('total_amount', 12, 2)->default(0);
 

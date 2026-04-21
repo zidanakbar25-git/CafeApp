@@ -10,7 +10,7 @@ class MenuSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('menus')->truncate();
+        
 
         $menus = [
             // MAIN COURSE (Food)
@@ -67,7 +67,7 @@ class MenuSeeder extends Seeder
                 'name'        => $name,
                 'description' => $desc,
                 'price'       => $price,
-                'image_url' => 'https://via.placeholder.com/300x200?text=' . urlencode($name),
+                'image_url' => 'images/menu/default.jpg',
                 'is_active'   => true,
                 'created_at'  => now(),
                 'updated_at'  => now(),
