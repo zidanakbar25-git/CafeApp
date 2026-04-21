@@ -117,12 +117,72 @@
             font-weight: bold;
         }
 
+
+        .cart-floating{
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 55px;
+            height: 55px;
+            background: #5C3A21;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            z-index: 999;
+        }
+
+        .reset-cart {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+           width: 100px;
+            height: 25px;
+            background: #5C3A21;
+            color: white;
+           
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            cursor: pointer;
+            
+            z-index: 999;
+        }
+
+        #cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: red;
+            color: white;
+            font-size: 12px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cart-icon {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
+
         /* desktop improvement */
         @media(min-width: 768px){
             .app-container {
                 max-width: 900px;
             }
         }
+
+
 
     </style>
 </head>
@@ -209,6 +269,15 @@
     @endforeach
 </div>
 
+<div class="cart-floating" onclick="goToCart()">
+    <img src="{{ asset('images/icons/cart.png ') }}" class="cart-icon">
+    <span id="cart-count">0</span>
+</div>
+
+<button onclick="clearCart()" class="btn btn-danger btn-sm mt-3 reset-cart">
+    Reset Cart 
+</button>
+
 </div>
 
 <script>
@@ -285,6 +354,61 @@ document.querySelectorAll('.sub-btn').forEach(btn => {
 
 // default load (auto klik category pertama)
 document.querySelector('.category-btn').click();
+
+
+//cart
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+// update badge
+function updateCartCount() {
+    let total = cart.reduce((sum, item) => sum + item.qty, 0);
+    document.getElementById("cart-count").innerText = total;
+}
+
+// add to cart
+document.querySelectorAll('.add-to-cart').forEach(btn => {
+    btn.addEventListener('click', function () {
+
+        let id = this.dataset.id;
+        let name = this.dataset.name;
+        let price = parseInt(this.dataset.price);
+
+        let existing = cart.find(item => item.id == id);
+
+        if (existing) {
+            existing.qty += 1;
+        } else {
+            cart.push({
+                id,
+                name,
+                price,
+                qty: 1
+            });
+        }
+
+        localStorage.setItem("cart", JSON.stringify(cart));
+
+        updateCartCount();
+    });
+});
+
+// redirect to cart page
+function goToCart() {
+    window.location.href = "/cart";
+}
+
+//Clear cart untuk kebutuhan testing
+function clearCart() {
+    localStorage.removeItem("cart");
+    cart = [];
+    updateCartCount();
+}
+
+// init
+updateCartCount();
+
+
 </script>
 
 </body>
