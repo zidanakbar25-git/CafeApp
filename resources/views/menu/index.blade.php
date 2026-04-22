@@ -118,61 +118,49 @@
         }
 
 
-        .cart-floating{
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 55px;
-            height: 55px;
-            background: #5C3A21;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            z-index: 999;
-        }
+       
 
         .reset-cart {
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
-           width: 100px;
-            height: 25px;
-            background: #5C3A21;
-            color: white;
-           
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            
-            cursor: pointer;
-            
-            z-index: 999;
-        }
+    background: #5C3A21;
+    color: white;
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 12px;
+    cursor: pointer;
+    border: none;
+}
+
+        .cart-header {
+    position: relative;
+    width: 38px;
+    height: 38px;
+    background: #5C3A21;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
 
         #cart-count {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: red;
-            color: white;
-            font-size: 12px;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: red;
+    color: white;
+    font-size: 10px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
         .cart-icon {
-            width: 24px;
-            height: 24px;
-            object-fit: contain;
+            width: 18px;
+            height: 18px;
+            filter: brightness(0) invert(1);
         }
 
         /* desktop improvement */
@@ -191,7 +179,9 @@
 
 <div class="container py-3 app-container">
 
-    <div class="header mb-3">
+    <div class="header mb-3 d-flex justify-content-between align-items-center">
+
+    <!-- KIRI: LOGO + NAMA -->
     <div class="d-flex align-items-center gap-2">
         
         <div class="logo-wrapper">
@@ -199,12 +189,24 @@
         </div>
 
         <h5 class="fw-bold mb-0">Cozy Cafe</h5>
-
     </div>
 
-    <span class="badge-table">
-        Meja {{ $tableData->table_number ?? '-' }}
-    </span>
+    <!-- KANAN: MEJA + CART -->
+    <div class="d-flex align-items-center gap-2">
+
+        <span class="badge-table">
+            Meja {{ $tableData->table_number ?? '-' }}
+        </span>
+
+        <!-- CART ICON -->
+        <div class="cart-header" onclick="goToCart()">
+            <img src="{{ asset('images/icons/cart.png') }}" class="cart-icon">
+            <span id="cart-count">0</span>
+        </div>
+
+        
+
+    </div>
 </div>
 
     <!-- CATEGORY -->
@@ -225,7 +227,14 @@
                 {{ $sub->name }}
             </button>
         @endforeach
+
+        //nanti dihapus setelah halaman cart selesai dibuat
+        <button onclick="clearCart()" class="btn btn-danger btn-sm mt-3 reset-cart">
+            Reset Cart 
+        </button>
     </div>
+
+    
 
     <!-- MENU -->
 <div class="row g-3">
@@ -269,14 +278,9 @@
     @endforeach
 </div>
 
-<div class="cart-floating" onclick="goToCart()">
-    <img src="{{ asset('images/icons/cart.png ') }}" class="cart-icon">
-    <span id="cart-count">0</span>
-</div>
 
-<button onclick="clearCart()" class="btn btn-danger btn-sm mt-3 reset-cart">
-    Reset Cart 
-</button>
+
+
 
 </div>
 
