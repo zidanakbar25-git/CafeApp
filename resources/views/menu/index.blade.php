@@ -3,176 +3,10 @@
 <head>
     <title>Menu</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Bootstrap -->
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <style>
-        body {
-            background: #f6f2ed;
-        }
-
-        /* container mobile style */
-        .app-container {
-            max-width: 100%;
-            padding: 0 10px;
-            margin: auto;
-        }
-
-        /* header */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo-wrapper {
-            width: 40px;
-            height: 40px;
-            background: #5C3A21; /* coklat gelap */
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .logo-img {
-            width: 22px;
-            height: 22px;
-            object-fit: contain;
-        }
-
-        .badge-table {
-            background: #5C3A21;
-            color: white;
-            border-radius: 20px;
-            padding: 5px 12px;
-            font-size: 12px;
-        }
-
-        /* category tab */
-        .category-wrapper {
-            background: #e7dfd6;
-            padding: 5px;
-            border-radius: 20px;
-            display: flex;
-            gap: 5px;
-        }
-
-        .category-btn {
-            flex: 1;
-            border-radius: 20px;
-            border: none;
-            background: transparent;
-            padding: 6px;
-        }
-
-        .category-active {
-            background: white;
-            font-weight: 500;
-        }
-
-        /* sub category */
-        .sub-btn {
-            border-radius: 20px;
-            border: 1px solid #ccc;
-            background: white;
-            padding: 6px 12px;
-            font-size: 13px;
-        }
-
-        .sub-active {
-            background: #8B5E3C;
-            color: white;
-            border: none;
-        }
-
-        /* card */
-        .menu-card {
-            border-radius: 15px;
-            overflow: hidden;
-            border: none;
-        }
-
-        .menu-img {
-            height: 140px;
-            object-fit: cover;
-        }
-
-        @media (min-width: 768px) {
-            .menu-img {
-            height: 160px;
-        }
-}
-
-        .btn-add {
-            background: #8B5E3C;
-            color: white;
-            border-radius: 20px;
-            font-size: 12px;
-            padding: 4px 10px;
-        }
-
-        .price {
-            font-weight: bold;
-        }
-
-
-       
-
-        .reset-cart {
-    background: #5C3A21;
-    color: white;
-    border-radius: 20px;
-    padding: 6px 12px;
-    font-size: 12px;
-    cursor: pointer;
-    border: none;
-}
-
-        .cart-header {
-    position: relative;
-    width: 38px;
-    height: 38px;
-    background: #5C3A21;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-}
-
-        #cart-count {
-    position: absolute;
-    top: -4px;
-    right: -4px;
-    background: red;
-    color: white;
-    font-size: 10px;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-        .cart-icon {
-            width: 18px;
-            height: 18px;
-            filter: brightness(0) invert(1);
-        }
-
-        /* desktop improvement */
-        @media(min-width: 768px){
-            .app-container {
-                max-width: 900px;
-            }
-        }
-
-
-
-    </style>
+    @vite('resources/css/menu.css')
 </head>
 
 <body>
@@ -227,11 +61,6 @@
                 {{ $sub->name }}
             </button>
         @endforeach
-
-        //nanti dihapus setelah halaman cart selesai dibuat
-        <button onclick="clearCart()" class="btn btn-danger btn-sm mt-3 reset-cart">
-            Reset Cart 
-        </button>
     </div>
 
     
@@ -265,7 +94,8 @@
                     <button class="btn btn-add btn-sm add-to-cart"
                         data-id="{{ $menu->menu_id }}"
                         data-name="{{ $menu->name }}"
-                        data-price="{{ $menu->price }}">
+                        data-price="{{ $menu->price }}"
+                        data-order-id="1">   {{-- sesuaikan dengan order_id yang aktif --}}
                         Add
                     </button>
                 </div>
@@ -285,133 +115,133 @@
 </div>
 
 <script>
+// ── Filter Category & SubCategory ──────────────────────────────────────────
+
 let activeCategory = null;
 let activeSub = null;
 
-// mapping category → subcategory
 const categoryMap = {
     "Food": ["Main Course", "Dessert"],
     "Drink": ["Coffee", "Non-Coffee"]
 };
 
-// filter menu
 function filterMenu() {
     document.querySelectorAll('.menu-item').forEach(item => {
         let show = true;
-
-        if (activeCategory && item.dataset.category !== activeCategory) {
-            show = false;
-        }
-
-        if (activeSub && item.dataset.sub !== activeSub) {
-            show = false;
-        }
-
+        if (activeCategory && item.dataset.category !== activeCategory) show = false;
+        if (activeSub && item.dataset.sub !== activeSub) show = false;
         item.style.display = show ? 'block' : 'none';
     });
 }
 
-// filter subcategory
 function filterSubCategory() {
     document.querySelectorAll('.sub-btn').forEach(btn => {
-        let subName = btn.dataset.sub;
-
-        if (!activeCategory) {
-            btn.style.display = 'inline-block';
-        } else {
-            btn.style.display = categoryMap[activeCategory].includes(subName)
-                ? 'inline-block'
-                : 'none';
-        }
+        const subName = btn.dataset.sub;
+        btn.style.display = (!activeCategory || categoryMap[activeCategory]?.includes(subName))
+            ? 'inline-block' : 'none';
     });
 }
 
-// CLICK CATEGORY
 document.querySelectorAll('.category-btn').forEach(btn => {
     btn.addEventListener('click', function () {
-
         activeCategory = this.dataset.category;
         activeSub = null;
-
-        // UI active
         document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('category-active'));
         this.classList.add('category-active');
-
         filterSubCategory();
         filterMenu();
     });
 });
 
-// CLICK SUBCATEGORY
 document.querySelectorAll('.sub-btn').forEach(btn => {
     btn.addEventListener('click', function () {
-
         activeSub = this.dataset.sub;
-
-        // UI active
         document.querySelectorAll('.sub-btn').forEach(b => b.classList.remove('sub-active'));
         this.classList.add('sub-active');
-
         filterMenu();
     });
 });
 
-// default load (auto klik category pertama)
 document.querySelector('.category-btn').click();
 
 
-//cart
+// ── Cart (AJAX ke database) ────────────────────────────────────────────────
 
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
+const CSRF_TOKEN = "{{ csrf_token() }}";
 
-// update badge
-function updateCartCount() {
-    let total = cart.reduce((sum, item) => sum + item.qty, 0);
-    document.getElementById("cart-count").innerText = total;
+/**
+ * Ambil total qty dari DB lalu update badge
+ */
+async function refreshCartBadge(orderId) {
+    try {
+        const res  = await fetch(`/cart/count/${orderId}`);
+        const data = await res.json();
+        document.getElementById('cart-count').innerText = data.count ?? 0;
+    } catch (e) {
+        console.error('Gagal refresh badge:', e);
+    }
 }
 
-// add to cart
+/**
+ * Kirim item ke DB via AJAX, lalu refresh badge
+ */
+async function addToCartAjax(menuId, orderId, btnEl) {
+    // Feedback visual
+    btnEl.disabled = true;
+    btnEl.innerText = '...';
+
+    try {
+        const res = await fetch('/cart/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': CSRF_TOKEN,
+            },
+            body: JSON.stringify({ menu_id: menuId, order_id: orderId }),
+        });
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        // Refresh badge dari DB
+        await refreshCartBadge(orderId);
+
+        // Feedback sukses
+        btnEl.innerText = '✓';
+        setTimeout(() => { btnEl.innerText = 'Add'; btnEl.disabled = false; }, 800);
+
+    } catch (e) {
+        console.error('Gagal tambah item:', e);
+        btnEl.innerText = '!';
+        setTimeout(() => { btnEl.innerText = 'Add'; btnEl.disabled = false; }, 1000);
+    }
+}
+
+// Pasang event listener ke semua tombol Add
 document.querySelectorAll('.add-to-cart').forEach(btn => {
     btn.addEventListener('click', function () {
-
-        let id = this.dataset.id;
-        let name = this.dataset.name;
-        let price = parseInt(this.dataset.price);
-
-        let existing = cart.find(item => item.id == id);
-
-        if (existing) {
-            existing.qty += 1;
-        } else {
-            cart.push({
-                id,
-                name,
-                price,
-                qty: 1
-            });
-        }
-
-        localStorage.setItem("cart", JSON.stringify(cart));
-
-        updateCartCount();
+        const menuId  = this.dataset.id;
+        const orderId = this.dataset.orderId;   // dari data-order-id
+        addToCartAjax(menuId, orderId, this);
     });
 });
 
-// redirect to cart page
+// Redirect ke cart
 function goToCart() {
-    window.location.href = "/cart";
+    // Ambil order_id dari tombol Add pertama yang ada
+    const firstBtn = document.querySelector('.add-to-cart');
+    const orderId  = firstBtn ? firstBtn.dataset.orderId : 1;
+    window.location.href = `/cart/${orderId}`;
 }
 
-//Clear cart untuk kebutuhan testing
+// Reset cart (testing) — hapus juga kalau sudah tidak perlu
 function clearCart() {
     localStorage.removeItem("cart");
-    cart = [];
-    updateCartCount();
+    document.getElementById('cart-count').innerText = 0;
 }
 
-// init
-updateCartCount();
-
+// Init: load badge dari DB saat halaman dibuka
+const firstBtn = document.querySelector('.add-to-cart');
+if (firstBtn) refreshCartBadge(firstBtn.dataset.orderId);
 
 </script>
 
