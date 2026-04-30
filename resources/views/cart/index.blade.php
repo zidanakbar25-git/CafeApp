@@ -139,7 +139,7 @@
             <button type="submit" class="checkout-btn"
                     id="checkout-btn"
                     {{ $order->orderDetails->isEmpty() ? 'disabled' : '' }}>
-                Checkout
+                Checkout 
                 @if (!$order->orderDetails->isEmpty())
                     &nbsp;·&nbsp;<span id="checkout-total">
                         Rp {{ number_format($order->total_amount, 0, ',', '.') }}

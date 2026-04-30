@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\CartController;
@@ -41,7 +41,7 @@ Route::get('/cart/checkout/{id}', [CartController::class, 'showCheckout']);
 
 Route::post('/cart/checkout/{id}', [CartController::class, 'checkout']);
 
-// Sementara — hapus kalau temenmu sudah buat PaymentController
-Route::get('/payment/{order_id}', function ($order_id) {
-    return response('Halaman payment untuk order #' . $order_id . ' — segera dibuat!');
-})->name('payment.index');
+
+// Payment page
+Route::get('/payment/{order_id}', [PaymentController::class, 'index'])
+    ->name('payment.index');
