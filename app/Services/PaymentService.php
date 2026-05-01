@@ -11,7 +11,7 @@ class PaymentService
         $order = Order::with('orderDetails.menu')->findOrFail($orderId);
 
         $subtotal = $order->orderDetails->sum('subtotal');
-     
+
         $total = $subtotal;
 
         return [
@@ -22,6 +22,3 @@ class PaymentService
         ];
     }
 }
-
-
-
