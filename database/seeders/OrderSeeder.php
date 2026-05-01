@@ -58,5 +58,22 @@ class OrderSeeder extends Seeder
                 'updated_at'    => Carbon::now()->subMinutes(40),
             ],
         ]);
+         DB::statement('PRAGMA foreign_keys = OFF;');
+
+    DB::table('orders')->insert([
+        [
+            'table_id'      => 1,
+            'order_code'    => 'ORD-' . strtoupper(Str::random(6)),
+            'customer_name' => 'Budi Santoso',
+            'status'        => 'menunggu',
+            'total_amount'  => 110000,
+            'created_at'    => Carbon::now()->subHours(3),
+            'updated_at'    => Carbon::now()->subHours(2),
+        ],
+        // ... sisa data sama seperti sebelumnya
+    ]);
+
+    DB::statement('PRAGMA foreign_keys = ON;');
     }
+    
 }

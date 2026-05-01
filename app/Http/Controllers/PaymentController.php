@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Services\PaymentService;
 use Illuminate\Http\Request;
+use App\Models\Order;
 
 class PaymentController extends Controller
 {
@@ -19,4 +20,11 @@ class PaymentController extends Controller
 
         return view('payment.index', $data);
     }
+public function cash($id)
+{
+    $order = Order::with('orderDetails.menu')->findOrFail($id);
+    $total = $order->orderDetails->sum('subtotal');
+
+    return view('payment.cash', compact('order', 'total'));
+}
 }

@@ -3,6 +3,7 @@ use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\PaymentCashController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -45,3 +46,7 @@ Route::post('/cart/checkout/{id}', [CartController::class, 'checkout']);
 // Payment page
 Route::get('/payment/{order_id}', [PaymentController::class, 'index'])
     ->name('payment.index');
+
+Route::get('/payment/cash/{order_id}', [PaymentCashController::class, 'show'])
+    ->name('payment.cash.show');
+
