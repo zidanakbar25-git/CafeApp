@@ -76,27 +76,11 @@
         <h1>Pembayaran</h1>
     </header>
 
+    <form method="POST" action="{{ route('payment.process', $order->order_id) }}">
+    @csrf
+
     {{-- Content --}}
     <main class="cart-content">
-
-        {{-- Ringkasan Pesanan --}}
-        <div class="order-summary">
-            <h2>Ringkasan Pesanan</h2>
-
-            @foreach ($items as $item)
-                <div class="summary-row">
-                    <span>{{ $item->menu->name }} ×{{ $item->quantity }}</span>
-                    <span>Rp {{ number_format($item->subtotal, 0, ',', '.') }}</span>
-                </div>
-            @endforeach
-
-            <hr class="summary-divider">
-
-            <div class="summary-total-row">
-                <span>Total</span>
-                <span>Rp {{ number_format($total, 0, ',', '.') }}</span>
-            </div>
-        </div>
 
         {{-- Informasi Pelanggan --}}
         <div class="order-summary">
@@ -107,7 +91,11 @@
             <input type="text"
                 name="customer_name"
                 placeholder="Masukan nama anda"
-                style="width:100%; margin-top:6px; padding:10px; border-radius:12px; border:1.5px solid #D3D1C7;" required>
+                style="width:100%; margin-top:6px; padding:10px; border-radius:12px; border:1.5px solid #D3D1C7;" 
+                required
+                oninvalid="this.setCustomValidity('Nama wajib diisi')"
+                oninput="this.setCustomValidity('')">
+                
         </div>
 
         {{-- Metode Pembayaran --}}
@@ -132,24 +120,6 @@
                 <input type="radio" name="payment_method" value="qris" checked>
             </label>
 
-            {{-- Transfer Bank --}}
-            <label class="payment-option">
-                <div class="payment-left">
-                    <div class="payment-icon">
-                        <svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2">
-                            <path d="M3 10h18"/>
-                            <path d="M2 10l10-6 10 6"/>
-                            <path d="M5 10v7M9 10v7M15 10v7M19 10v7"/>
-                            <path d="M2 17h20"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <div class="payment-title">Transfer Bank</div>
-                        <div class="payment-sub">Transfer melalui bank</div>
-                    </div>
-                </div>
-                <input type="radio" name="payment_method" value="bank">
-            </label>
 
             {{-- Kartu Kredit --}}
             <label class="payment-option">
@@ -186,14 +156,22 @@
             </label>
         </div>
 
-        {{-- Pembayaran Aman --}}
-        <div class="order-summary" style="background:#F4EFE9;">
-            <div style="display:flex; gap:10px;">
-                <div>🔒</div>
-                <div>
-                    <div>Pembayaran Aman</div>
-                    <div style="font-size:12px;">Data pembayaran Anda terenkripsi</div>
+        {{-- Ringkasan Pesanan --}}
+        <div class="order-summary">
+            <h2>Ringkasan Pesanan</h2>
+
+            @foreach ($items as $item)
+                <div class="summary-row">
+                    <span>{{ $item->menu->name }} ×{{ $item->quantity }}</span>
+                    <span>Rp {{ number_format($item->subtotal, 0, ',', '.') }}</span>
                 </div>
+            @endforeach
+
+            <hr class="summary-divider">
+
+            <div class="summary-total-row">
+                <span>Total</span>
+                <span>Rp {{ number_format($total, 0, ',', '.') }}</span>
             </div>
         </div>
 
@@ -202,13 +180,13 @@
     {{-- Footer --}}
     <div class="checkout-bar">
 
-        <a href="{{ route('payment.qris', $order->order_id) }}">
-            <button type="button" class="checkout-btn">
-                Bayar · Rp {{ number_format($total, 0, ',', '.') }}
-            </button>
-        </a>
+        <button type="submit" class="checkout-btn">
+            Bayar · Rp {{ number_format($total, 0, ',', '.') }}
+        </button>
 
     </div>
+
+    </form>
 
 </div>
 
@@ -231,6 +209,10 @@ document.querySelectorAll('.payment-option').forEach(option => {
         this.querySelector('input').checked = true;
     });
 });
+
+
+
+
 </script>
 
 </body>

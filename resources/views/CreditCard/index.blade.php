@@ -1,229 +1,103 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-    <title>Pembayaran</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Card Payment</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    @vite('resources/css/cart.css')
 
     <style>
-        * { box-sizing: border-box; }
-
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #e6ddd4, #d6c5b8);
-            display: flex;
-            justify-content: center;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 420px;
-            padding: 20px;
-        }
-
-        .header {
-            background: #6b4226;
-            color: white;
-            padding: 18px;
-            border-radius: 20px;
-            font-size: 20px;
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 15px;
-        }
-
-        .card {
-            background: #ffffff;
-            padding: 18px;
-            border-radius: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.08);
-        }
-
-        .title {
-            font-weight: 600;
-            margin-bottom: 15px;
-        }
-
-        .row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
-
-        hr {
-            border: none;
-            border-top: 1px solid #eee;
-            margin: 12px 0;
-        }
-
-        label {
-            font-size: 13px;
-            font-weight: 500;
-            display: block;
-            margin-top: 10px;
-        }
-
-        input {
-            width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid #ddd;
-            margin-top: 5px;
-        }
-
-        .flex {
-            display: flex;
-            gap: 10px;
-        }
-
-        .field {
-            flex: 1;
-        }
-
-        .payment-method {
-            padding: 12px;
-            border: 2px solid #6b4226;
-            border-radius: 12px;
-            display: flex;
-            gap: 10px;
-        }
-
-        .small {
-            font-size: 12px;
-            color: gray;
-        }
-
-        .btn {
-            margin-top: 15px;
-            background: #6b4226;
-            color: white;
-            padding: 15px;
-            border-radius: 30px;
-            border: none;
-            width: 100%;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .success {
-            background: #d4edda;
-            color: #155724;
-            padding: 12px;
-            border-radius: 10px;
-            margin-bottom: 15px;
+        .order-summary {
+            margin-top: 20px;
+            padding-bottom: 20px;
+            
         }
     </style>
 </head>
-
 <body>
 
-<div class="container">
+<div class="cart-wrapper">
 
-    <div class="header">Pembayaran Credit Card</div>
+    {{-- Header --}}
+    <header class="cart-header">
+        <a href="{{ route('payment.index', $order->order_id) }}" class="back-btn">
+            ←
+        </a>
+        <h1>Pembayaran Credit Card</h1>
+    </header>
 
-    <?php if(session()->getFlashdata('success')): ?>
-        <div class="success">
-            <?= session()->getFlashdata('success') ?>
-        </div>
-    <?php endif; ?>
+    {{-- Content --}}
+    <main class="cart-content">
 
+        {{-- FORM CREDIT CARD --}}
+        <form method="POST" action="{{ route('payment.process', $order->order_id) }}">
+            @csrf
 
-    <!-- Ringkasan -->
-    <div class="card">
+            <div class="order-summary">
 
-        <div class="title">Ringkasan Pesanan</div>
+                <h2 style="margin-bottom:16px;">Masukkan Data Kartu</h2>
 
-        <?php foreach($items as $item): ?>
+                <label class="text-sm">Nama Pemilik</label>
+                <input type="text" name="name"
+                    class="w-full mt-1 mb-3 p-2 border rounded-xl"
+                    placeholder="Nama sesuai kartu" required>
 
-            <div class="row">
-                <span>
-                    <?= $item['name'] ?> x<?= $item['quantity'] ?>
-                </span>
+                <label class="text-sm">Nomor Kartu</label>
+                <input type="text" name="card"
+                    class="w-full mt-1 mb-3 p-2 border rounded-xl"
+                    placeholder="xxxx xxxx xxxx xxxx" required>
 
-                <span>
-                    Rp <?= number_format($item['subtotal'],0,',','.') ?>
-                </span>
-            </div>
-
-        <?php endforeach; ?>
-
-        <hr>
-
-        <div class="row">
-            <strong>Total</strong>
-
-            <strong>
-                Rp <?= number_format($total,0,',','.') ?>
-            </strong>
-        </div>
-
-    </div>
-
-
-    <!-- Form -->
-    <form method="post" action="<?= base_url('payment/proses/'.$order['order_id']) ?>">
-
-        <div class="card">
-
-            <div class="title">Informasi Kartu</div>
-
-            <label>Nama Pemilik</label>
-            <input type="text" name="name" required>
-
-            <label>Nomor Kartu</label>
-            <input type="text" name="card" required>
-
-            <div class="flex">
-
-                <div class="field">
-                    <label>Expired</label>
-                    <input type="text" name="exp" required>
-                </div>
-
-                <div class="field">
-                    <label>CVV</label>
-                    <input type="password" name="cvv" required>
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="card">
-
-            <div class="title">
-                Metode Pembayaran
-            </div>
-
-            <div class="payment-method">
-
-                💳
-
-                <div>
-                    Credit Card
-
-                    <div class="small">
-                        Pembayaran menggunakan kartu
+                <div class="flex gap-2">
+                    <div class="w-1/2">
+                        <label class="text-sm">Expired</label>
+                        <input type="text" name="exp"
+                            class="w-full mt-1 p-2 border rounded-xl"
+                            placeholder="MM/YY" required>
                     </div>
 
+                    <div class="w-1/2">
+                        <label class="text-sm">CVV</label>
+                        <input type="password" name="cvv"
+                            class="w-full mt-1 p-2 border rounded-xl"
+                            placeholder="***" required>
+                    </div>
                 </div>
 
             </div>
 
+            
+
+            {{-- Ringkasan --}}
+        <div class="order-summary">
+            <h2>Ringkasan Pesanan</h2>
+
+            @foreach ($items as $item)
+                <div class="summary-row">
+                    <span>{{ $item->menu->name }} ×{{ $item->quantity }}</span>
+                    <span>Rp {{ number_format($item->subtotal, 0, ',', '.') }}</span>
+                </div>
+            @endforeach
+
+            <hr class="summary-divider">
+
+            <div class="summary-total-row">
+                <span>Total</span>
+                <span>Rp {{ number_format($total, 0, ',', '.') }}</span>
+            </div>
         </div>
 
+    </main>
 
-        <button class="btn">
-
-            Bayar ·
-            Rp <?= number_format($total,0,',','.') ?>
-
+    {{-- Footer --}}
+    <div class="checkout-bar">
+        <button type="submit" class="checkout-btn">
+            Bayar · Rp {{ number_format($total, 0, ',', '.') }}
         </button>
+    </div>
 
-    </form>
+        </form>
 
 </div>
 

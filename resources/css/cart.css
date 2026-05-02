@@ -307,7 +307,7 @@ html, body {
     background: var(--cream-card);
     border-radius: var(--radius-card);
     box-shadow: var(--shadow-card);
-    padding: 18px 18px 6px;
+    padding: 25px 25px 10px;
     border: 1px solid var(--border);
     margin-top: 4px;
 }
@@ -328,7 +328,7 @@ html, body {
     align-items: center;
     padding: 7px 0;
     font-size: 0.92rem;
-    color: var(--text-muted);
+    color: var(--brown-primary);
 }
 
 .summary-row .label { font-weight: 600; }

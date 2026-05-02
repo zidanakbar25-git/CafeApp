@@ -23,24 +23,7 @@
     {{-- Content --}}
     <main class="cart-content">
 
-        {{-- Ringkasan --}}
-        <div class="order-summary">
-            <h2>Ringkasan Pesanan</h2>
-
-            @foreach ($items as $item)
-                <div class="summary-row">
-                    <span>{{ $item->menu->name }} ×{{ $item->quantity }}</span>
-                    <span>Rp {{ number_format($item->subtotal, 0, ',', '.') }}</span>
-                </div>
-            @endforeach
-
-            <hr class="summary-divider">
-
-            <div class="summary-total-row">
-                <span>Total</span>
-                <span>Rp {{ number_format($total, 0, ',', '.') }}</span>
-            </div>
-        </div>
+        
 
         {{-- QRIS --}}
         <div class="order-summary text-center">
@@ -60,16 +43,22 @@
 
         </div>
 
-        {{-- Status --}}
-        <div class="order-summary" style="background:#F4EFE9;">
-            <div style="display:flex; gap:10px;">
-                <div>🔒</div>
-                <div>
-                    <div>Pembayaran Aman</div>
-                    <div style="font-size:12px;">
-                        Pembayaran Anda dilindungi sistem keamanan
-                    </div>
+        {{-- Ringkasan --}}
+        <div class="order-summary">
+            <h2>Ringkasan Pesanan</h2>
+
+            @foreach ($items as $item)
+                <div class="summary-row">
+                    <span>{{ $item->menu->name }} ×{{ $item->quantity }}</span>
+                    <span>Rp {{ number_format($item->subtotal, 0, ',', '.') }}</span>
                 </div>
+            @endforeach
+
+            <hr class="summary-divider">
+
+            <div class="summary-total-row">
+                <span>Total</span>
+                <span>Rp {{ number_format($total, 0, ',', '.') }}</span>
             </div>
         </div>
 

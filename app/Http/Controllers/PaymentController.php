@@ -36,10 +36,41 @@ public function cash($id)
         return view('Qris.index', $data);
     }
 
-    public function process($order_id)
-    {
-        return redirect()->route('payment.index', $order_id);
+    public function cc($order_id)
+{
+    $data = $this->paymentService->getCheckoutData($order_id);
+
+    return view('CreditCard.index', $data);
+}
+
+    public function process(Request $request, $order_id)
+{
+    $request->validate([
+        'customer_name' => 'required'
+    ]);
+
+    $order = Order::findOrFail($order_id);
+
+    $order->customer_name = $request->customer_name;
+    $order->save();
+
+    // redirect sesuai metode
+    if ($request->payment_method === 'qris') {
+        return redirect()->route('payment.qris', $order_id);
     }
+
+    if ($request->payment_method === 'cash') {
+        return redirect()->route('payment.cash.show', $order_id);
+    }
+
+    if ($request->payment_method === 'cc') {
+        return redirect()->route('payment.cc', $order_id);
+    }
+
+    return back();
+}
+
+
 }
 
   

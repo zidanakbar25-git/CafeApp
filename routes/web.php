@@ -47,9 +47,14 @@ Route::get('/payment/qris/{order_id}', [PaymentController::class, 'qris'])
 Route::get('/payment/{order_id}', [PaymentController::class, 'index'])
     ->name('payment.index');
 
+//cash payment
 Route::get('/payment/cash/{order_id}', [PaymentCashController::class, 'show'])
     ->name('payment.cash.show');
 
 // QRIS
 Route::post('/payment/process/{order_id}', [PaymentController::class, 'process'])
     ->name('payment.process');
+
+//credit card
+Route::get('/payment/cc/{order_id}', [PaymentController::class, 'cc'])
+    ->name('payment.cc');
