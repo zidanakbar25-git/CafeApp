@@ -104,7 +104,6 @@
 
             <label>Nama Lengkap</label>
 
-            <!-- value="{{ $order->customer_name ?? '' }}" -->
             <input type="text"
                 name="customer_name"
                 placeholder="Masukan nama anda"
@@ -202,12 +201,13 @@
 
     {{-- Footer --}}
     <div class="checkout-bar">
-        <form action="{{ route('cart.checkout', $order->order_id) }}" method="POST">
-            @csrf
-            <button type="submit" class="checkout-btn">
+
+        <a href="{{ route('payment.qris', $order->order_id) }}">
+            <button type="button" class="checkout-btn">
                 Bayar · Rp {{ number_format($total, 0, ',', '.') }}
             </button>
-        </form>
+        </a>
+
     </div>
 
 </div>
