@@ -28,9 +28,8 @@ public function cash($id)
 
     return view('payment.cash', compact('order', 'total'));
 }
-}
 
-    public function qris($order_id)
+  public function qris($order_id)
     {
         $data = $this->paymentService->getCheckoutData($order_id);
 
@@ -42,3 +41,6 @@ public function cash($id)
         return redirect()->route('payment.index', $order_id);
     }
 }
+
+  
+
