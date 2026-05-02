@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\PaymentCashController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -41,6 +42,13 @@ Route::get('/payment/{order_id}', [PaymentController::class, 'index'])
 
 Route::get('/payment/qris/{order_id}', [PaymentController::class, 'qris'])
     ->name('payment.qris');
+
+// Payment page
+Route::get('/payment/{order_id}', [PaymentController::class, 'index'])
+    ->name('payment.index');
+
+Route::get('/payment/cash/{order_id}', [PaymentCashController::class, 'show'])
+    ->name('payment.cash.show');
 
 // QRIS
 Route::post('/payment/process/{order_id}', [PaymentController::class, 'process'])
