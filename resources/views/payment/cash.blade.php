@@ -159,11 +159,13 @@
 
     {{-- Footer --}}
     <div class="checkout-bar">
-        <button class="checkout-btn" onclick="window.print()">
-            Cetak Nota
-        </button>
-    </div>
 
+        <a href="{{ route('payment.success', $order->order_id) }}"
+        class="checkout-btn">
+            Konfirmasi Pembayaran
+        </a>
+
+    </div>
 </div>
 
 </body>

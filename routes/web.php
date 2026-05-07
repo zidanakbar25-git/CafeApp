@@ -58,3 +58,11 @@ Route::post('/payment/process/{order_id}', [PaymentController::class, 'process']
 //credit card
 Route::get('/payment/cc/{order_id}', [PaymentController::class, 'cc'])
     ->name('payment.cc');
+
+
+//order-success
+Route::get('/payment/success/{id}', [PaymentController::class, 'success'])
+    ->name('payment.success');
+    
+// Redirect root to table 1
+    Route::redirect('/', '/table/1')->name('home');

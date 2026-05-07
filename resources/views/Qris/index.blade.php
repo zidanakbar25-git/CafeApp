@@ -67,7 +67,7 @@
     {{-- Footer --}}
     <div class="checkout-bar">
 
-        <a href="{{ route('payment.process', $order->order_id) }}">
+        <a href="{{ route('payment.success', $order->order_id) }}">
             <button type="button" class="checkout-btn">
                 Saya Sudah Bayar
             </button>

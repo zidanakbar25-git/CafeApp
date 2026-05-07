@@ -70,6 +70,12 @@ public function cash($id)
     return back();
 }
 
+public function success($order_id)
+{
+    $data = $this->paymentService->getCheckoutData($order_id);
+
+    return view('OrderSucces.index', $data);
+}
 
 }
 
