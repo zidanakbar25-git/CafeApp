@@ -38,7 +38,7 @@
         {{-- Item List --}}
         <div id="cart-items">
         @foreach ($order->orderDetails as $detail)
-            <div class="cart-item-card" id="item-{{ $detail->detail_id }}">
+            <div class="cart-item-card" dusk="cart-item" id="item-{{ $detail->detail_id }}">
 
                 @if ($detail->menu && $detail->menu->image_url)
                     <img class="cart-item-img"
@@ -64,7 +64,7 @@
                 <div class="cart-item-right">
 
                     {{-- Hapus --}}
-                    <button class="delete-btn"
+                    <button class="delete-btn" dusk="delete-btn"
                             data-detail="{{ $detail->detail_id }}"
                             data-order="{{ $order->order_id }}"
                             onclick="deleteItem(this)"
@@ -81,18 +81,18 @@
 
                     {{-- Qty Controls --}}
                     <div class="qty-controls">
-                        <button class="qty-btn minus"
+                        <button class="qty-btn minus" dusk="qty-minus"
                                 data-detail="{{ $detail->detail_id }}"
                                 data-order="{{ $order->order_id }}"
                                 data-action="decrement"
                                 onclick="updateQty(this)"
                                 {{ $detail->quantity <= 1 ? 'disabled' : '' }}>−</button>
 
-                        <span class="qty-value" id="qty-{{ $detail->detail_id }}">
+                        <span class="qty-value" dusk="qty-value" id="qty-{{ $detail->detail_id }}">
                             {{ $detail->quantity }}
                         </span>
 
-                        <button class="qty-btn plus"
+                        <button class="qty-btn plus" dusk="qty-plus"
                                 data-detail="{{ $detail->detail_id }}"
                                 data-order="{{ $order->order_id }}"
                                 data-action="increment"
@@ -124,7 +124,7 @@
             <hr class="summary-divider">
             <div class="summary-total-row">
                 <span class="label">Total</span>
-                <span class="value" id="grand-total">
+                <span class="value" id="grand-total" dusk="grand-total">
                     Rp {{ number_format($order->total_amount, 0, ',', '.') }}
                 </span>
             </div>
@@ -194,7 +194,8 @@
                     font-size:14px; font-weight:500; cursor:pointer;
                 ">Batal</button>
 
-                <button onclick="confirmDelete()" style="
+                <button onclick="confirmDelete()" dusk="confirm-delete"
+                    style="
                     flex:1; padding:12px; border-radius:12px;
                     border: none;
                     background: #D85A30; color:#fff;

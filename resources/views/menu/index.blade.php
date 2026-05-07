@@ -33,9 +33,9 @@
         </span>
 
         <!-- CART ICON -->
-        <div class="cart-header" onclick="goToCart()">
+        <div class="cart-header" onclick="goToCart()" dusk="cart-button">
             <img src="{{ asset('images/icons/cart.png') }}" class="cart-icon">
-            <span id="cart-count">0</span>
+            <span id="cart-count" dusk="cart-count">0</span>
         </div>
 
         
@@ -91,7 +91,7 @@
                         Rp {{ number_format($menu->price) }}
                     </span>
 
-                    <button class="btn btn-add btn-sm add-to-cart"
+                    <button class="btn btn-add btn-sm add-to-cart" dusk="add-cart"
                         data-id="{{ $menu->menu_id }}"
                         data-name="{{ $menu->name }}"
                         data-price="{{ $menu->price }}"
