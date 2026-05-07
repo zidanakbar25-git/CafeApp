@@ -67,11 +67,17 @@
     {{-- Footer --}}
     <div class="checkout-bar">
 
-        <a href="{{ route('payment.success', $order->order_id) }}">
-            <button type="button" class="checkout-btn">
-                Saya Sudah Bayar
-            </button>
-        </a>
+        <form action="{{ route('payment.finalize', $order->order_id) }}" method="POST">
+
+    @csrf
+
+    <input type="hidden" name="payment_method" value="qris">
+
+    <button type="submit" class="checkout-btn" dusk="pay-button">
+        Saya Sudah Bayar
+    </button>
+
+</form>
 
     </div>
 

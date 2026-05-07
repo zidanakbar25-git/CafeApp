@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Services\PaymentService;
 use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Models\Payment;
+use Illuminate\Support\Str;
 
 class PaymentController extends Controller
 {
@@ -72,9 +74,72 @@ public function cash($id)
 
 public function success($order_id)
 {
-    $data = $this->paymentService->getCheckoutData($order_id);
+    $order = Order::with([
+        'orderDetails.menu',
+        'payments'
+    ])->findOrFail($order_id);
 
-    return view('OrderSucces.index', $data);
+    $items = $order->orderDetails;
+
+    $total = $order->total_amount;
+
+    return view('OrderSucces.index', compact(
+        'order',
+        'items',
+        'total'
+    ));
+}
+
+public function finalizePayment(Request $request, $order_id)
+{
+    $order = Order::findOrFail($order_id);
+
+    /*
+    |--------------------------------------------------------------------------
+    | UPDATE ORDER
+    |--------------------------------------------------------------------------
+    */
+
+    $order->status = 'diproses';
+
+    $order->paid_at = now();
+
+    $order->save();
+
+    /*
+    |--------------------------------------------------------------------------
+    | CREATE PAYMENT
+    |--------------------------------------------------------------------------
+    */
+
+    Payment::create([
+        'order_id'        => $order->order_id,
+        'admin_id'        => null,
+        'payment_method'  => $request->payment_method,
+        'payment_status'  => 'paid',
+        'paid_at'         => now(),
+    ]);
+
+    /*
+|--------------------------------------------------------------------------
+| CREATE NEW EMPTY ORDER
+|--------------------------------------------------------------------------
+*/
+
+Order::create([
+    'table_id'      => $order->table_id,
+    'order_code'    => 'ORD-' . strtoupper(Str::random(6)),
+    'status'        => 'menunggu',
+    'total_amount'  => 0,
+]);
+
+    /*
+    |--------------------------------------------------------------------------
+    | REDIRECT SUCCESS PAGE
+    |--------------------------------------------------------------------------
+    */
+
+    return redirect()->route('payment.success', $order_id);
 }
 
 }

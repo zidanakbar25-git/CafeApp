@@ -5,19 +5,19 @@ namespace Tests\Browser;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
 
-class QrisPaymentTest extends DuskTestCase
+class CreditCardPaymentTest extends DuskTestCase
 {
     /**
-     * KU-2.12
-     * Pembayaran QRIS
+     * KU-2.14
+     * Payment credit card
      */
-    public function test_qris_payment_flow()
+    public function test_credit_card_payment_flow()
     {
         $this->browse(function (Browser $browser) {
 
             /*
             |--------------------------------------------------------------------------
-            | BUKA HALAMAN PAYMENT
+            | HALAMAN PAYMENT
             |--------------------------------------------------------------------------
             */
 
@@ -37,11 +37,11 @@ class QrisPaymentTest extends DuskTestCase
 
                 /*
                 |--------------------------------------------------------------------------
-                | PILIH QRIS
+                | PILIH CREDIT CARD
                 |--------------------------------------------------------------------------
                 */
 
-                ->click('@payment-qris')
+                ->click('@payment-cc-option')
 
                 ->pause(1000)
 
@@ -57,16 +57,13 @@ class QrisPaymentTest extends DuskTestCase
 
                 /*
                 |--------------------------------------------------------------------------
-                | VALIDASI HALAMAN QRIS
+                | VALIDASI HALAMAN CREDIT CARD
                 |--------------------------------------------------------------------------
                 */
 
-                ->assertSee('Pembayaran QRIS');
+                ->assertSee('Credit Card');
 
-                
-            
-
-            
+               
         });
     }
 }

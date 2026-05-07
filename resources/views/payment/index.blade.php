@@ -122,7 +122,7 @@
 
 
             {{-- Kartu Kredit --}}
-            <label class="payment-option">
+            <label class="payment-option" dusk="payment-cc-option">
                 <div class="payment-left">
                     <div class="payment-icon">
                         <svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2">
@@ -139,7 +139,7 @@
             </label>
 
             {{-- Tunai --}}
-            <label class="payment-option">
+            <label class="payment-option" dusk="payment-cash-option"> 
                 <div class="payment-left">
                     <div class="payment-icon">
                         <svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2">

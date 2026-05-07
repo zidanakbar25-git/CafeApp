@@ -95,7 +95,7 @@
                         data-id="{{ $menu->menu_id }}"
                         data-name="{{ $menu->name }}"
                         data-price="{{ $menu->price }}"
-                        data-order-id="1">   {{-- sesuaikan dengan order_id yang aktif --}}
+                        data-order-id="{{ $order->order_id }}"> 
                         Add
                     </button>
                 </div>
@@ -229,7 +229,7 @@ document.querySelectorAll('.add-to-cart').forEach(btn => {
 function goToCart() {
     // Ambil order_id dari tombol Add pertama yang ada
     const firstBtn = document.querySelector('.add-to-cart');
-    const orderId  = firstBtn ? firstBtn.dataset.orderId : 1;
+    const orderId = firstBtn?.dataset.orderId;
     window.location.href = `/cart/${orderId}`;
 }
 

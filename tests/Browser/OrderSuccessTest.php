@@ -4,36 +4,45 @@ namespace Tests\Browser;
 
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
+use App\Models\Order;
 
-class QrisPaymentTest extends DuskTestCase
+class OrderSuccessTest extends DuskTestCase
 {
     /**
-     * KU-2.12
-     * Pembayaran QRIS
+     * KU-2.8
+     * Berhasil masuk ke halaman order success
      */
-    public function test_qris_payment_flow()
+    public function test_order_success_page()
     {
         $this->browse(function (Browser $browser) {
 
             /*
             |--------------------------------------------------------------------------
-            | BUKA HALAMAN PAYMENT
+            | AMBIL ACTIVE ORDER
             |--------------------------------------------------------------------------
             */
 
-            $browser->visit('/payment/1')
+            $order = Order::where('status', 'menunggu')
+                ->latest()
+                ->first();
 
-                ->pause(2000)
+            /*
+            |--------------------------------------------------------------------------
+            | OPEN PAYMENT PAGE
+            |--------------------------------------------------------------------------
+            */
+
+            $browser->visit('/payment/' . $order->order_id)
+
+                ->pause(1000)
 
                 /*
                 |--------------------------------------------------------------------------
-                | INPUT NAMA
+                | INPUT CUSTOMER
                 |--------------------------------------------------------------------------
                 */
 
-                ->type('@customer-name', 'Zidan')
-
-                ->pause(1000)
+                ->type('customer_name', 'Zidan Testing')
 
                 /*
                 |--------------------------------------------------------------------------
@@ -43,11 +52,9 @@ class QrisPaymentTest extends DuskTestCase
 
                 ->click('@payment-qris')
 
-                ->pause(1000)
-
                 /*
                 |--------------------------------------------------------------------------
-                | KLIK BAYAR
+                | SUBMIT PAYMENT
                 |--------------------------------------------------------------------------
                 */
 
@@ -57,16 +64,25 @@ class QrisPaymentTest extends DuskTestCase
 
                 /*
                 |--------------------------------------------------------------------------
-                | VALIDASI HALAMAN QRIS
+                | QRIS PAGE
                 |--------------------------------------------------------------------------
                 */
 
-                ->assertSee('Pembayaran QRIS');
+                ->click('@pay-button')
 
-                
-            
+                ->pause(2000)
 
-            
+                /*
+                |--------------------------------------------------------------------------
+                | ASSERT SUCCESS PAGE
+                |--------------------------------------------------------------------------
+                */
+
+                ->assertSee('Pesanan Berhasil')
+
+                ->assertSee('Informasi Pesanan')
+
+                ->assertSee('Rincian Pesanan');
         });
     }
 }

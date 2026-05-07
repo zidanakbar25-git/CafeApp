@@ -61,8 +61,13 @@ Route::get('/payment/cc/{order_id}', [PaymentController::class, 'cc'])
 
 
 //order-success
-Route::get('/payment/success/{id}', [PaymentController::class, 'success'])
+Route::get('/payment/success/{order_id}', [PaymentController::class, 'success'])
     ->name('payment.success');
     
 // Redirect root to table 1
     Route::redirect('/', '/table/1')->name('home');
+
+    // Finalize payment
+    Route::post('/payment/finalize/{order_id}', [PaymentController::class, 'finalizePayment'])
+    ->name('payment.finalize');
+

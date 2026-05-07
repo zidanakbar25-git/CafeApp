@@ -5,19 +5,19 @@ namespace Tests\Browser;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
 
-class QrisPaymentTest extends DuskTestCase
+class CashPaymentTest extends DuskTestCase
 {
     /**
-     * KU-2.12
-     * Pembayaran QRIS
+     * KU-2.13
+     * Pembayaran cash
      */
-    public function test_qris_payment_flow()
+    public function test_cash_payment_flow()
     {
         $this->browse(function (Browser $browser) {
 
             /*
             |--------------------------------------------------------------------------
-            | BUKA HALAMAN PAYMENT
+            | HALAMAN PAYMENT
             |--------------------------------------------------------------------------
             */
 
@@ -37,11 +37,11 @@ class QrisPaymentTest extends DuskTestCase
 
                 /*
                 |--------------------------------------------------------------------------
-                | PILIH QRIS
+                | PILIH CASH
                 |--------------------------------------------------------------------------
                 */
 
-                ->click('@payment-qris')
+                ->click('@payment-cash-option')
 
                 ->pause(1000)
 
@@ -53,20 +53,15 @@ class QrisPaymentTest extends DuskTestCase
 
                 ->click('@pay-button')
 
-                ->pause(3000)
+                ->pause(3000);
 
-                /*
-                |--------------------------------------------------------------------------
-                | VALIDASI HALAMAN QRIS
-                |--------------------------------------------------------------------------
-                */
+            /*
+            |--------------------------------------------------------------------------
+            | VALIDASI HALAMAN NOTA
+            |--------------------------------------------------------------------------
+            */
 
-                ->assertSee('Pembayaran QRIS');
-
-                
-            
-
-            
+            $browser->assertSee('Nota Pembayaran');
         });
     }
 }

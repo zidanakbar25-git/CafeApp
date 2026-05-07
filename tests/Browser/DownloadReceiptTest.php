@@ -5,68 +5,51 @@ namespace Tests\Browser;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
 
-class QrisPaymentTest extends DuskTestCase
+class DownloadReceiptTest extends DuskTestCase
 {
     /**
-     * KU-2.12
-     * Pembayaran QRIS
+     * KU-2.9
+     * Download struk berhasil dijalankan
      */
-    public function test_qris_payment_flow()
+    public function test_download_receipt_button()
     {
         $this->browse(function (Browser $browser) {
 
             /*
             |--------------------------------------------------------------------------
-            | BUKA HALAMAN PAYMENT
+            | OPEN SUCCESS PAGE
             |--------------------------------------------------------------------------
             */
 
-            $browser->visit('/payment/1')
+            $browser->visit('/payment/success/1')
 
                 ->pause(2000)
 
                 /*
                 |--------------------------------------------------------------------------
-                | INPUT NAMA
+                | ASSERT BUTTON EXISTS
                 |--------------------------------------------------------------------------
                 */
 
-                ->type('@customer-name', 'Zidan')
-
-                ->pause(1000)
+                ->assertSee('Download Struk')
 
                 /*
                 |--------------------------------------------------------------------------
-                | PILIH QRIS
+                | CLICK DOWNLOAD
                 |--------------------------------------------------------------------------
                 */
 
-                ->click('@payment-qris')
-
-                ->pause(1000)
-
-                /*
-                |--------------------------------------------------------------------------
-                | KLIK BAYAR
-                |--------------------------------------------------------------------------
-                */
-
-                ->click('@pay-button')
+                ->click('@download-receipt')
 
                 ->pause(3000)
 
                 /*
                 |--------------------------------------------------------------------------
-                | VALIDASI HALAMAN QRIS
+                | PAGE STILL STABLE
                 |--------------------------------------------------------------------------
                 */
 
-                ->assertSee('Pembayaran QRIS');
-
-                
-            
-
-            
+                ->assertSee('Pesanan Berhasil');
         });
     }
 }

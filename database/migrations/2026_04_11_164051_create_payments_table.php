@@ -12,9 +12,9 @@ return new class extends Migration
             $table->increments('payment_id');
 
             $table->unsignedInteger('order_id');
-            $table->unsignedInteger('admin_id');
+            $table->unsignedInteger('admin_id')->nullable();
 
-            $table->enum('payment_method', ['cash', 'credit_card', 'transfer']);
+            $table->enum('payment_method', ['cash', 'credit_card', 'qris']);
 
             $table->enum('payment_status', ['pending', 'paid', 'failed', 'refunded'])->default('pending');
 

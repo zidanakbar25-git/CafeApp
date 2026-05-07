@@ -12,7 +12,6 @@
         .order-summary {
             margin-top: 20px;
             padding-bottom: 20px;
-            
         }
     </style>
 </head>
@@ -32,45 +31,43 @@
     <main class="cart-content">
 
         {{-- FORM CREDIT CARD --}}
-        <form method="POST" action="{{ route('payment.process', $order->order_id) }}">
-            @csrf
+        <div class="order-summary">
 
-            <div class="order-summary">
+            <h2 style="margin-bottom:16px;">Masukkan Data Kartu</h2>
 
-                <h2 style="margin-bottom:16px;">Masukkan Data Kartu</h2>
+            <label class="text-sm">Nama Pemilik</label>
+            <input type="text"
+                class="w-full mt-1 mb-3 p-2 border rounded-xl"
+                placeholder="Nama sesuai kartu">
 
-                <label class="text-sm">Nama Pemilik</label>
-                <input type="text" name="name"
-                    class="w-full mt-1 mb-3 p-2 border rounded-xl"
-                    placeholder="Nama sesuai kartu" required>
+            <label class="text-sm">Nomor Kartu</label>
+            <input type="text"
+                class="w-full mt-1 mb-3 p-2 border rounded-xl"
+                placeholder="xxxx xxxx xxxx xxxx">
 
-                <label class="text-sm">Nomor Kartu</label>
-                <input type="text" name="card"
-                    class="w-full mt-1 mb-3 p-2 border rounded-xl"
-                    placeholder="xxxx xxxx xxxx xxxx" required>
+            <div class="flex gap-2">
 
-                <div class="flex gap-2">
-                    <div class="w-1/2">
-                        <label class="text-sm">Expired</label>
-                        <input type="text" name="exp"
-                            class="w-full mt-1 p-2 border rounded-xl"
-                            placeholder="MM/YY" required>
-                    </div>
+                <div class="w-1/2">
+                    <label class="text-sm">Expired</label>
+                    <input type="text"
+                        class="w-full mt-1 p-2 border rounded-xl"
+                        placeholder="MM/YY">
+                </div>
 
-                    <div class="w-1/2">
-                        <label class="text-sm">CVV</label>
-                        <input type="password" name="cvv"
-                            class="w-full mt-1 p-2 border rounded-xl"
-                            placeholder="***" required>
-                    </div>
+                <div class="w-1/2">
+                    <label class="text-sm">CVV</label>
+                    <input type="password"
+                        class="w-full mt-1 p-2 border rounded-xl"
+                        placeholder="***">
                 </div>
 
             </div>
 
-            
+        </div>
 
-            {{-- Ringkasan --}}
+        {{-- Ringkasan --}}
         <div class="order-summary">
+
             <h2>Ringkasan Pesanan</h2>
 
             @foreach ($items as $item)
@@ -86,6 +83,7 @@
                 <span>Total</span>
                 <span>Rp {{ number_format($total, 0, ',', '.') }}</span>
             </div>
+
         </div>
 
     </main>
@@ -93,15 +91,19 @@
     {{-- Footer --}}
     <div class="checkout-bar">
 
-        <a href="{{ route('payment.success', $order->order_id) }}">
-            <button type="button" class="checkout-btn">
+        <form action="{{ route('payment.finalize', $order->order_id) }}" method="POST">
+
+            @csrf
+
+            <input type="hidden" name="payment_method" value="credit_card">
+
+            <button type="submit" class="checkout-btn">
                 Bayar · Rp {{ number_format($total, 0, ',', '.') }}
             </button>
-        </a>
-
-    </div>
 
         </form>
+
+    </div>
 
 </div>
 
