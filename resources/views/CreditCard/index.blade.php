@@ -92,9 +92,13 @@
 
     {{-- Footer --}}
     <div class="checkout-bar">
-        <button type="submit" class="checkout-btn">
-            Bayar · Rp {{ number_format($total, 0, ',', '.') }}
-        </button>
+
+        <a href="{{ route('payment.success', $order->order_id) }}">
+            <button type="button" class="checkout-btn">
+                Bayar · Rp {{ number_format($total, 0, ',', '.') }}
+            </button>
+        </a>
+
     </div>
 
         </form>
