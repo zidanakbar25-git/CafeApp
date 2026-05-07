@@ -137,7 +137,7 @@
         <form action="{{ route('cart.checkout', $order->order_id) }}" method="POST">
             @csrf
             <button type="submit" class="checkout-btn"
-                    id="checkout-btn"
+                    id="checkout-btn" dusk="checkout-btn"
                     {{ $order->orderDetails->isEmpty() ? 'disabled' : '' }}>
                 Checkout 
                 @if (!$order->orderDetails->isEmpty())

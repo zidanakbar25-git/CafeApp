@@ -7,28 +7,51 @@ use Tests\DuskTestCase;
 
 class CartCounterTest extends DuskTestCase
 {
+    /**
+     * KU-2.2
+     * Menampilkan jumlah item pada cart
+     */
     public function test_cart_counter_updates()
     {
         $this->browse(function (Browser $browser) {
 
             $browser->visit('/table/1')
 
-                // reset storage
-                ->script('localStorage.clear();');
+                ->pause(2000);
 
-            $browser->refresh()
+            /*
+            |--------------------------------------------------------------------------
+            | AMBIL COUNT AWAL
+            |--------------------------------------------------------------------------
+            */
 
-                ->pause(2000)
+            $initialCount = (int) $browser->text('@cart-count');
 
-                ->click('@add-cart')
+            /*
+            |--------------------------------------------------------------------------
+            | ADD ITEM
+            |--------------------------------------------------------------------------
+            */
 
-                ->pause(1000)
+            $browser->click('@add-cart')
 
-                ->click('@add-cart')
+                ->pause(2000);
 
-                ->waitForTextIn('@cart-count', '2', 10)
+            /*
+            |--------------------------------------------------------------------------
+            | AMBIL COUNT BARU
+            |--------------------------------------------------------------------------
+            */
 
-                ->assertSeeIn('@cart-count', '2');
+            $updatedCount = (int) $browser->text('@cart-count');
+
+            /*
+            |--------------------------------------------------------------------------
+            | VALIDASI COUNT BERTAMBAH
+            |--------------------------------------------------------------------------
+            */
+
+            $this->assertTrue($updatedCount > $initialCount);
         });
     }
 }

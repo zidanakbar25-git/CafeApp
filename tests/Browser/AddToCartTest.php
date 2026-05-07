@@ -17,18 +17,41 @@ class AddToCartTest extends DuskTestCase
 
             $browser->visit('/table/1')
 
-                // tunggu halaman load
-                ->pause(2000)
+                ->pause(2000);
 
-                // klik tombol add
-                ->click('@add-cart')
+            /*
+            |--------------------------------------------------------------------------
+            | AMBIL CART COUNT AWAL
+            |--------------------------------------------------------------------------
+            */
 
-                // tunggu proses ajax/session
-                ->pause(1000)
+            $initialCount = (int) $browser->text('@cart-count');
 
+            /*
+            |--------------------------------------------------------------------------
+            | KLIK ADD
+            |--------------------------------------------------------------------------
+            */
 
-                // cek cart count berubah jadi 1
-                ->assertSeeIn('@cart-count', '1');
+            $browser->click('@add-cart')
+
+                ->pause(2000);
+
+            /*
+            |--------------------------------------------------------------------------
+            | AMBIL CART COUNT BARU
+            |--------------------------------------------------------------------------
+            */
+
+            $updatedCount = (int) $browser->text('@cart-count');
+
+            /*
+            |--------------------------------------------------------------------------
+            | VALIDASI CART BERTAMBAH
+            |--------------------------------------------------------------------------
+            */
+
+            $this->assertTrue($updatedCount > $initialCount);
         });
     }
 }

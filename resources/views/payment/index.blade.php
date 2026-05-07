@@ -88,7 +88,7 @@
 
             <label>Nama Lengkap</label>
 
-            <input type="text"
+            <input type="text" dusk="customer-name"
                 name="customer_name"
                 placeholder="Masukan nama anda"
                 style="width:100%; margin-top:6px; padding:10px; border-radius:12px; border:1.5px solid #D3D1C7;" 
@@ -103,7 +103,7 @@
             <h2>Metode Pembayaran</h2>
 
             {{-- QRIS --}}
-            <label class="payment-option active">
+            <label class="payment-option active" dusk="payment-qris">
                 <div class="payment-left">
                     <div class="payment-icon active">
                         <svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2">
@@ -117,7 +117,7 @@
                         <div class="payment-sub">Scan QR Code</div>
                     </div>
                 </div>
-                <input type="radio" name="payment_method" value="qris" checked>
+                <input type="radio" name="payment_method"  value="qris" checked >
             </label>
 
 
@@ -180,7 +180,7 @@
     {{-- Footer --}}
     <div class="checkout-bar">
 
-        <button type="submit" class="checkout-btn">
+        <button type="submit" class="checkout-btn" dusk="pay-button">
             Bayar · Rp {{ number_format($total, 0, ',', '.') }}
         </button>
 
