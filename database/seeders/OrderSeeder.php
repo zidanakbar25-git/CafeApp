@@ -58,5 +58,11 @@ class OrderSeeder extends Seeder
                 'updated_at'    => Carbon::now()->subMinutes(40),
             ],
         ]);
+         
+
+   
+
+    
     }
+    
 }

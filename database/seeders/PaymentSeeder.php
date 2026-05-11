@@ -32,7 +32,7 @@ class PaymentSeeder extends Seeder
             [
                 'order_id'       => 3,
                 'admin_id'       => 2, // cashier1
-                'payment_method' => 'transfer',
+                'payment_method' => 'qris',
                 'payment_status' => 'pending',
                 'paid_at'        => null,
                 'created_at'     => Carbon::now()->subMinutes(20),
