@@ -63,9 +63,26 @@ Route::get('/logout', [AdminLoginController::class, 'logout']);
 
 /*
 |--------------------------------------------------------------------------
-| DASHBOARD 
+| DASHBOARD
 |--------------------------------------------------------------------------
 */
+
 Route::get('/dashboard', function () {
     return view('dashboard.index');
-})->middleware('auth');
+})->middleware('auth')->name('admin.dashboard');
+
+Route::get('/admin/tables', function () {
+    return 'Tables Page';
+})->name('admin.tables.index');
+
+Route::get('/admin/menu', function () {
+    return 'Menu Page';
+})->name('admin.menu.index');
+
+Route::get('/admin/admins', function () {
+    return 'Admins Page';
+})->name('admin.admins.index');
+
+Route::get('/admin/orders/history', function () {
+    return 'Orders History Page';
+})->name('admin.orders.history');

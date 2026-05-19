@@ -12,20 +12,19 @@ class AdminSeeder extends Seeder
     {
         DB::table('admins')->insert([
             [
-                'username'      => 'Manager',
-                'password_hash' => Hash::make('manager123'),
-                'role'          => 'Manager',
-                'created_at'    => now(),
-                'updated_at'    => now(),
+                'username'   => 'Manager',
+                'password'   => Hash::make('manager123'),
+                'role'       => 'manager',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
-                'username'      => 'cashier',
-                'password_hash' => Hash::make('cashier123'),
-                'role'          => 'cashier',
-                'created_at'    => now(),
-                'updated_at'    => now(),
+                'username'   => 'cashier',
+                'password'   => Hash::make('cashier123'),
+                'role'       => 'cashier',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
-            
         ]);
     }
 }

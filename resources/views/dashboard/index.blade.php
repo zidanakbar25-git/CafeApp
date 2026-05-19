@@ -5,30 +5,12 @@
 </head>
 <body style="margin:0; font-family:Arial;">
 
-<div style="display:flex;">
+<div class="admin-layout">
 
-    <!-- SIDEBAR -->
-    <div style="width:220px; height:100vh; background:#eee; padding:15px;">
-
-        <h3>CAFE APP</h3>
-
-        <a href="/dashboard">Home</a><br><br>
-
-        @if(auth()->user()->role == 'manager')
-            <a href="#">Laporan</a><br><br>
-            <a href="#">User Management</a><br><br>
-        @endif
-
-        <a href="#">Orders</a><br><br>
-
-        <hr>
-
-        <a href="/logout">Logout</a>
-
-    </div>
+    @include('dashboard.layout.sidebar')
 
     <!-- CONTENT -->
-    <div style="flex:1; padding:20px;">
+    <div class="admin-content" style="padding:20px;">
 
         <h1>Dashboard</h1>
 
