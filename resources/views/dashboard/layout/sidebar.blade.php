@@ -1,9 +1,7 @@
-
 @once
 <style>
 :root {
     --sb-width: 260px;
-    --sb-collapsed: 68px;
     --sb-bg: #ffffff;
     --sb-border: #f0f0f0;
     --sb-text: #374151;
@@ -21,7 +19,6 @@ body {
     background: #f8f9fb;
 }
 
-/* ── Layout wrapper ─────────────────────────── */
 .admin-layout {
     display: flex;
     min-height: 100vh;
@@ -30,15 +27,9 @@ body {
 .admin-content {
     flex: 1;
     margin-left: var(--sb-width);
-    transition: margin-left var(--sb-ease);
     min-width: 0;
 }
 
-.admin-layout.sb-collapsed .admin-content {
-    margin-left: var(--sb-collapsed);
-}
-
-/* ── Sidebar shell ──────────────────────────── */
 .sb {
     position: fixed;
     top: 0; left: 0;
@@ -50,14 +41,8 @@ body {
     flex-direction: column;
     z-index: 100;
     overflow: hidden;
-    transition: width var(--sb-ease);
 }
 
-.admin-layout.sb-collapsed .sb {
-    width: var(--sb-collapsed);
-}
-
-/* ── Brand ──────────────────────────────────── */
 .sb-brand {
     display: flex;
     align-items: center;
@@ -65,20 +50,6 @@ body {
     padding: 20px 16px;
     border-bottom: 1px solid var(--sb-border);
     flex-shrink: 0;
-    overflow: hidden;
-}
-
-.sb-avatar {
-    width: 36px; height: 36px; min-width: 36px;
-    background: #111827; color: #fff;
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 700; letter-spacing: 0.5px;
-    flex-shrink: 0;
-}
-
-.sb-brand-info {
-    flex: 1; overflow: hidden;
 }
 
 .sb-brand-name {
@@ -93,18 +64,6 @@ body {
     white-space: nowrap; margin-top: 1px;
 }
 
-.sb-toggle {
-    min-width: 28px; width: 28px; height: 28px;
-    border: none; background: transparent;
-    border-radius: 7px; cursor: pointer;
-    color: var(--sb-muted);
-    display: flex; align-items: center; justify-content: center;
-    transition: background var(--sb-ease), color var(--sb-ease);
-    flex-shrink: 0;
-}
-.sb-toggle:hover { background: var(--sb-active-bg); color: var(--sb-text); }
-
-/* ── Nav ────────────────────────────────────── */
 .sb-nav {
     flex: 1;
     overflow-y: auto; overflow-x: hidden;
@@ -124,7 +83,6 @@ body {
     color: var(--sb-label);
     padding: 8px 8px 4px;
     white-space: nowrap;
-    transition: opacity var(--sb-ease);
 }
 
 .sb-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 2px; }
@@ -136,7 +94,6 @@ body {
     color: var(--sb-text);
     font-size: 13.5px; font-weight: 500;
     white-space: nowrap; overflow: hidden;
-    position: relative;
     transition: background var(--sb-ease), color var(--sb-ease);
 }
 .sb-item:hover  { background: var(--sb-hover-bg); color: var(--sb-active-text); }
@@ -161,23 +118,10 @@ body {
     display: flex; align-items: center; justify-content: center;
 }
 
-/* ── Footer ─────────────────────────────────── */
 .sb-footer {
     padding: 10px 10px 16px;
     border-top: 1px solid var(--sb-border);
     flex-shrink: 0;
-}
-.sb-footer .sb-item { color: var(--sb-muted); }
-.sb-footer .sb-item:hover { color: var(--sb-text); }
-
-/* ── Collapsed: sembunyikan teks ────────────── */
-.admin-layout.sb-collapsed .sb-brand-info,
-.admin-layout.sb-collapsed .sb-label,
-.admin-layout.sb-collapsed .sb-section-label,
-.admin-layout.sb-collapsed .sb-badge {
-    opacity: 0;
-    pointer-events: none;
-    width: 0;
 }
 
 .logout-btn {
@@ -185,59 +129,27 @@ body {
     padding: 9px 10px;
     border-radius: 10px;
     background: #ef4444;
-    color: #111827 !important;
+    color: #ffffff !important;
     display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 10px;
     text-decoration: none;
     font-size: 13.5px;
     font-weight: 600;
     transition: background 0.2s ease;
     box-sizing: border-box;
 }
-
-.logout-btn:hover {
-    background: #dc2626;
-}
-
-
+.logout-btn:hover { background: #dc2626; }
 
 .logo-wrapper {
-    width: 36px;
-    height: 36px;
-    min-width: 36px;
-    border-radius: 10px;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #5C3A21;
-    flex-shrink: 0;
+    width: 36px; height: 36px; min-width: 36px;
+    border-radius: 10px; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    background: #5C3A21; flex-shrink: 0;
 }
+.logo-img { width: 78%; height: 78%; object-fit: contain; }
 
-.logo-img {
-    width: 78%;
-    height: 78%;
-    object-fit: contain;
-}
-
-/* ── Collapsed: tooltip hover ───────────────── */
-.admin-layout.sb-collapsed .sb-item::after {
-    content: attr(data-tip);
-    position: absolute;
-    left: calc(100% + 12px); top: 50%;
-    transform: translateY(-50%);
-    background: #111827; color: #fff;
-    padding: 5px 10px; border-radius: 7px;
-    font-size: 12px; font-weight: 500;
-    white-space: nowrap; pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.15s ease;
-    z-index: 200;
-}
-.admin-layout.sb-collapsed .sb-item:hover::after { opacity: 1; }
-
-/* ── Overlay mobile ─────────────────────────── */
+/* Mobile */
 .sb-overlay {
     display: none;
     position: fixed; inset: 0;
@@ -246,7 +158,6 @@ body {
     z-index: 99;
 }
 
-/* ── Mobile ─────────────────────────────────── */
 .sb-mobile-btn {
     display: none;
     align-items: center; justify-content: center;
@@ -260,37 +171,26 @@ body {
 @media (max-width: 768px) {
     .sb {
         transform: translateX(-100%);
-        width: var(--sb-width) !important;
         transition: transform var(--sb-ease);
     }
-    .admin-layout.sb-open .sb        { transform: translateX(0); }
+    .admin-layout.sb-open .sb         { transform: translateX(0); }
     .admin-layout.sb-open .sb-overlay { display: block; }
-    .admin-content                    { margin-left: 0 !important; }
-    .sb-mobile-btn                    { display: flex; }
+    .admin-content                     { margin-left: 0 !important; }
+    .sb-mobile-btn                     { display: flex; }
 }
 </style>
 @endonce
 
-{{-- ═══════════════════════════════════════════
-     HTML
-════════════════════════════════════════════ --}}
 <aside class="sb">
 
     <div class="sb-brand">
         <div class="logo-wrapper">
-            <img src="{{ asset('images/logo/logo.png') }}" class="logo-img">
+            <img src="{{ asset('images/logo/logo.png') }}" class="logo-img" alt="Logo">
         </div>
-        <div class="sb-brand-info">
+        <div>
             <span class="sb-brand-name">Cozy Cafe</span>
             <span class="sb-brand-role">Admin Panel</span>
         </div>
-        <button class="sb-toggle" id="sbToggle" title="Toggle Sidebar">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="3" y1="6" x2="21" y2="6"/>
-                <line x1="3" y1="12" x2="21" y2="12"/>
-                <line x1="3" y1="18" x2="21" y2="18"/>
-            </svg>
-        </button>
     </div>
 
     <nav class="sb-nav">
@@ -300,7 +200,6 @@ body {
             <ul class="sb-list">
                 <li>
                     <a href="{{ route('admin.dashboard') }}"
-                       data-tip="Dashboard"
                        class="sb-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                         <span class="sb-icon">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -322,7 +221,6 @@ body {
             <ul class="sb-list">
                 <li>
                     <a href="{{ route('admin.tables.index') }}"
-                       data-tip="Manajemen Meja"
                        class="sb-item {{ request()->routeIs('admin.tables.*') ? 'active' : '' }}">
                         <span class="sb-icon">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -337,7 +235,6 @@ body {
                 </li>
                 <li>
                     <a href="{{ route('admin.menu.index') }}"
-                       data-tip="Manajemen Menu"
                        class="sb-item {{ request()->routeIs('admin.menu.*') ? 'active' : '' }}">
                         <span class="sb-icon">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -350,7 +247,6 @@ body {
                 </li>
                 <li>
                     <a href="{{ route('admin.admins.index') }}"
-                       data-tip="Manajemen Admin"
                        class="sb-item {{ request()->routeIs('admin.admins.*') ? 'active' : '' }}">
                         <span class="sb-icon">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -369,7 +265,6 @@ body {
             <ul class="sb-list">
                 <li>
                     <a href="{{ route('admin.orders.history') }}"
-                       data-tip="History Pesanan"
                        class="sb-item {{ request()->routeIs('admin.orders.history') ? 'active' : '' }}">
                         <span class="sb-icon">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -385,40 +280,27 @@ body {
 
     </nav>
 
-   <div class="sb-footer">
-    <a href="/logout" class="logout-btn">
-        Logout
-    </a>
-</div>
+    <div class="sb-footer">
+        <a href="/logout" class="logout-btn">
+            <span class="sb-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                    <polyline points="16 17 21 12 16 7"/>
+                    <line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+            </span>
+            Logout
+        </a>
+    </div>
 
 </aside>
 
 <div class="sb-overlay" id="sbOverlay"></div>
 
-{{-- ═══════════════════════════════════════════
-     JS  (hanya di-render sekali)
-════════════════════════════════════════════ --}}
 @once
 <script>
 (function () {
-    var STORE  = 'mochi_sb_collapsed';
     var layout = document.querySelector('.admin-layout');
-
-    // Restore state saat halaman dibuka
-    if (localStorage.getItem(STORE) === 'true' && window.innerWidth > 768) {
-        layout && layout.classList.add('sb-collapsed');
-    }
-
-    // Toggle collapse (desktop) atau tutup (mobile)
-    var toggle = document.getElementById('sbToggle');
-    toggle && toggle.addEventListener('click', function () {
-        if (window.innerWidth <= 768) {
-            layout && layout.classList.remove('sb-open');
-            return;
-        }
-        layout && layout.classList.toggle('sb-collapsed');
-        localStorage.setItem(STORE, layout && layout.classList.contains('sb-collapsed'));
-    });
 
     // Tutup sidebar lewat overlay (mobile)
     var overlay = document.getElementById('sbOverlay');
@@ -426,7 +308,7 @@ body {
         layout && layout.classList.remove('sb-open');
     });
 
-    // Tombol buka sidebar mobile — taruh di topbar kamu dengan id="sbMobileBtn"
+    // Tombol buka sidebar mobile — taruh di topbar dengan id="sbMobileBtn"
     var mobileBtn = document.getElementById('sbMobileBtn');
     mobileBtn && mobileBtn.addEventListener('click', function () {
         layout && layout.classList.add('sb-open');
