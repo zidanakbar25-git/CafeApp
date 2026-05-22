@@ -9,7 +9,9 @@ class Order extends Model
 {
     protected $table = 'orders';
     protected $primaryKey = 'order_id';
-    public $timestamps = false;
+
+    // aktifkan timestamps
+    public $timestamps = true;
 
     protected $fillable = [
         'table_id',
@@ -17,13 +19,17 @@ class Order extends Model
         'customer_name',
         'status',
         'total_amount',
+        'payment_method',
     ];
+
     protected $casts = [
         'total_amount' => 'integer',
+        'created_at'   => 'datetime',
+        'updated_at'   => 'datetime',
     ];
 
     /**
-     * An order has many order detail lines.
+     * Relasi order details
      */
     public function orderDetails(): HasMany
     {
@@ -31,7 +37,15 @@ class Order extends Model
     }
 
     /**
-     * Recalculate and persist total_amount from current order details.
+     * Relasi payments
+     */
+    public function payments()
+    {
+        return $this->hasMany(Payment::class, 'order_id');
+    }
+
+    /**
+     * Recalculate total order
      */
     public function recalculateTotal(): void
     {
@@ -40,15 +54,10 @@ class Order extends Model
     }
 
     /**
-     * Format total to Indonesian Rupiah.
+     * Format Rupiah
      */
     public function getTotalFormattedAttribute(): string
     {
         return 'Rp ' . number_format($this->total_amount, 0, ',', '.');
     }
-
-    public function payments()
-{
-    return $this->hasMany(Payment::class, 'order_id');
-}
 }
