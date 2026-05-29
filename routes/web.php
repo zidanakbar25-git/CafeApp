@@ -8,6 +8,8 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentCashController;
 use App\Http\Controllers\AdminLoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\HistoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -96,32 +98,55 @@ Route::get('/logout', [AdminLoginController::class, 'logout'])
 
 /*
 |--------------------------------------------------------------------------
-| ADMIN DASHBOARD
+| ADMIN DASHBOARD — butuh login
 |--------------------------------------------------------------------------
 */
 
-Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware('auth')
-    ->name('admin.dashboard');
+Route::middleware('auth')->group(function () {
 
-/*
-|--------------------------------------------------------------------------
-| ADMIN PAGES
-|--------------------------------------------------------------------------
-*/
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('admin.dashboard');
 
-Route::get('/admin/tables', function () {
-    return 'Tables Page';
-})->name('admin.tables.index');
+    /*
+    |--------------------------------------------------------------------------
+    | ORDER — Kasir & Manager bisa update status
+    |--------------------------------------------------------------------------
+    */
+    Route::patch('/admin/orders/{id}/status', [OrderController::class, 'updateStatus'])
+        ->name('admin.orders.updateStatus');
 
-Route::get('/admin/menu', function () {
-    return 'Menu Page';
-})->name('admin.menu.index');
+    Route::delete('/admin/orders/{id}', [OrderController::class, 'destroy'])
+        ->name('admin.orders.destroy');
 
-Route::get('/admin/admins', function () {
-    return 'Admins Page';
-})->name('admin.admins.index');
+    Route::get('/admin/orders/{id}/struk', [OrderController::class, 'struk'])
+        ->name('admin.orders.struk');
 
-Route::get('/admin/orders/history', function () {
-    return 'Orders History Page';
-})->name('admin.orders.history');
+    /*
+    |--------------------------------------------------------------------------
+    | HALAMAN MANAGER ONLY
+    |--------------------------------------------------------------------------
+    */
+    Route::middleware('role:manager')->group(function () {
+
+        Route::get('/admin/tables', function () {
+            return 'Tables Page';
+        })->name('admin.tables.index');
+
+        Route::get('/admin/menu', function () {
+            return 'Menu Page';
+        })->name('admin.menu.index');
+
+        Route::get('/admin/admins', function () {
+            return 'Admins Page';
+        })->name('admin.admins.index');
+
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | RIWAYAT — Manager & Kasir bisa lihat
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/admin/orders/history', [HistoryController::class, 'index'])->name('admin.orders.history');
+
+});

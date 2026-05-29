@@ -62,6 +62,7 @@ body {
     display: block;
     font-size: 11px; color: var(--sb-muted);
     white-space: nowrap; margin-top: 1px;
+    text-transform: capitalize;
 }
 
 .sb-nav {
@@ -111,7 +112,7 @@ body {
 .sb-label { flex: 1; overflow: hidden; text-overflow: ellipsis; }
 
 .sb-badge {
-    background: #111827; color: #fff;
+    background: #ef4444; color: #fff;
     font-size: 10px; font-weight: 700;
     min-width: 18px; height: 18px; padding: 0 5px;
     border-radius: 20px;
@@ -149,34 +150,13 @@ body {
 }
 .logo-img { width: 78%; height: 78%; object-fit: contain; }
 
-/* Mobile */
-.sb-overlay {
-    display: none;
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.3);
-    backdrop-filter: blur(2px);
-    z-index: 99;
-}
-
-.sb-mobile-btn {
-    display: none;
-    align-items: center; justify-content: center;
-    width: 38px; height: 38px;
-    border: 1px solid var(--sb-border);
-    border-radius: 9px; background: #fff;
-    cursor: pointer; color: var(--sb-text);
-    flex-shrink: 0;
-}
-
 @media (max-width: 768px) {
     .sb {
         transform: translateX(-100%);
         transition: transform var(--sb-ease);
     }
     .admin-layout.sb-open .sb         { transform: translateX(0); }
-    .admin-layout.sb-open .sb-overlay { display: block; }
     .admin-content                     { margin-left: 0 !important; }
-    .sb-mobile-btn                     { display: flex; }
 }
 </style>
 @endonce
@@ -189,12 +169,15 @@ body {
         </div>
         <div>
             <span class="sb-brand-name">Cozy Cafe</span>
-            <span class="sb-brand-role">Admin Panel</span>
+            {{-- Tampilkan role yang sedang login --}}
+            <span class="sb-brand-role">{{ auth()->user()->role ?? 'Staff' }}</span>
         </div>
     </div>
 
     <nav class="sb-nav">
 
+        {{-- Overview: hanya untuk kasir, disembunyikan dari manager --}}
+        @if(auth()->user()->role !== 'manager')
         <div class="sb-section">
             <span class="sb-section-label">Overview</span>
             <ul class="sb-list">
@@ -203,19 +186,33 @@ body {
                        class="sb-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                         <span class="sb-icon">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
-                                <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+                                <rect x="3" y="3" width="7" height="7" rx="1"/>
+                                <rect x="14" y="3" width="7" height="7" rx="1"/>
+                                <rect x="3" y="14" width="7" height="7" rx="1"/>
+                                <rect x="14" y="14" width="7" height="7" rx="1"/>
                             </svg>
                         </span>
                         <span class="sb-label">Dashboard</span>
-                        @if(($pendingOrderCount ?? 0) > 0)
-                            <span class="sb-badge">{{ $pendingOrderCount }}</span>
+                        {{-- Badge: pesanan baru belum diproses (pending_cash + menunggu yg sudah dibayar) --}}
+                        @php
+                            $badge = \App\Models\Order::whereIn('status', ['pending_cash', 'menunggu'])
+                                ->whereNotNull('payment_method')
+                                ->whereNotNull('paid_at')
+                                ->count();
+                        @endphp
+                        @if($badge > 0)
+                            <span class="sb-badge">{{ $badge }}</span>
                         @endif
                     </a>
                 </li>
             </ul>
         </div>
+        @endif
 
+        {{-- ==============================
+             MANAJEMEN — hanya manager
+        ============================== --}}
+        @if(auth()->user()->role === 'manager')
         <div class="sb-section">
             <span class="sb-section-label">Manajemen</span>
             <ul class="sb-list">
@@ -238,7 +235,8 @@ body {
                        class="sb-item {{ request()->routeIs('admin.menu.*') ? 'active' : '' }}">
                         <span class="sb-icon">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/>
+                                <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/>
+                                <path d="M7 2v20"/>
                                 <path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/>
                             </svg>
                         </span>
@@ -259,7 +257,11 @@ body {
                 </li>
             </ul>
         </div>
+        @endif
 
+        {{-- ==============================
+             RIWAYAT — semua role bisa lihat
+        ============================== --}}
         <div class="sb-section">
             <span class="sb-section-label">Riwayat</span>
             <ul class="sb-list">
@@ -294,30 +296,3 @@ body {
     </div>
 
 </aside>
-
-<div class="sb-overlay" id="sbOverlay"></div>
-
-@once
-<script>
-(function () {
-    var layout = document.querySelector('.admin-layout');
-
-    // Tutup sidebar lewat overlay (mobile)
-    var overlay = document.getElementById('sbOverlay');
-    overlay && overlay.addEventListener('click', function () {
-        layout && layout.classList.remove('sb-open');
-    });
-
-    // Tombol buka sidebar mobile — taruh di topbar dengan id="sbMobileBtn"
-    var mobileBtn = document.getElementById('sbMobileBtn');
-    mobileBtn && mobileBtn.addEventListener('click', function () {
-        layout && layout.classList.add('sb-open');
-    });
-
-    // ESC menutup sidebar di mobile
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') layout && layout.classList.remove('sb-open');
-    });
-})();
-</script>
-@endonce

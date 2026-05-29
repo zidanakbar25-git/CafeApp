@@ -8,14 +8,17 @@ use Illuminate\Support\Facades\Auth;
 
 class RoleMiddleware
 {
-    public function handle(Request $request, Closure $next, $role)
+    public function handle(Request $request, Closure $next, string $role)
     {
         if (!Auth::check()) {
             return redirect('/login');
         }
 
-        if (Auth::user()->role !== $role) {
-            abort(403, 'Unauthorized');
+        // Support multiple role: middleware('role:manager,cashier')
+        $allowedRoles = explode(',', $role);
+
+        if (!in_array(Auth::user()->role, $allowedRoles)) {
+            abort(403, 'Anda tidak memiliki izin untuk mengakses halaman ini.');
         }
 
         return $next($request);

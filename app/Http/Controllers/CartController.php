@@ -21,9 +21,17 @@ public function index(int $order_id = 1): \Illuminate\View\View|\Illuminate\Http
         'orderDetails' => fn($q) => $q->with('menu')->orderBy('detail_id'),
     ])->findOrFail($order_id);
 
-    if (in_array($order->status, ['diproses', 'selesai', 'paid'])) {
+    // Redirect jika order sudah melewati tahap cart
+    // pending_cash & menunggu (sudah dibayar) = sudah di antrian kasir, tidak bisa edit cart lagi
+    if (in_array($order->status, ['diproses', 'selesai', 'paid', 'pending_cash'])) {
         return redirect('/payment/' . $order_id);
     }
+
+    if ($order->status === 'menunggu' && $order->paid_at !== null) {
+        return redirect('/payment/' . $order_id);
+    }
+
+    // draft = order kosong untuk meja berikutnya, boleh diisi item (alur normal)
 
     $totalItems = $order->orderDetails->sum('quantity');
 
