@@ -371,7 +371,11 @@
                                             @if(in_array($order->status, ['selesai','menunggu','diproses','pending_cash']))
                                             <a href="{{ route('admin.orders.struk', $order->order_id) }}"
                                                target="_blank" class="btn-struk">
-                                                🖨 Struk
+                                                
+                                                <img src="{{ asset('images/icons/receipt.png') }}"
+                                                    alt="Struk"
+                                                    width="20">
+
                                             </a>
                                             @endif
                                             {{-- Hapus: selesai & dibatalkan --}}
