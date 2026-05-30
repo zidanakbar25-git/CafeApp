@@ -8,260 +8,260 @@
     <title>Manajemen Meja — Cozy Cafe</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-    body {
-        margin: 0;
-        background: #f5f7fb;
-        font-family: 'Segoe UI', system-ui, sans-serif;
-    }
-
-    .admin-layout {
-        display: flex;
-    }
-
-    .admin-content {
-        flex: 1;
-        padding: 0;
-        margin-left: 260px;
-    }
-
-    .topbar {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 14px 30px;
-        border-bottom: 1px solid #e5e7eb;
-        background: #fff;
-        font-size: 13px;
-        color: #6b7280;
-    }
-
-    .topbar strong {
-        color: #111827;
-    }
-
-    .qr-table {
-        border-collapse: separate;
-        border-spacing: 0;
-        width: 100%;
-    }
-
-    .qr-table thead th {
-        background: #f9fafb;
-        font-size: 11px;
-        font-weight: 700;
-        letter-spacing: .8px;
-        text-transform: uppercase;
-        color: #6b7280;
-        padding: 14px 20px;
-        border-bottom: 1px solid #e5e7eb;
-    }
-
-    .qr-table tbody tr {
-        transition: background .15s;
-    }
-
-    .qr-table tbody tr:hover {
-        background: #f9fafb;
-    }
-
-    .qr-table tbody td {
-        padding: 18px 20px;
-        border-bottom: 1px solid #f3f4f6;
-        vertical-align: middle;
-    }
-
-    .qr-table tbody tr:last-child td {
-        border-bottom: none;
-    }
-
-    .meja-number {
-        font-size: 22px;
-        font-weight: 700;
-        color: #0b1533;
-    }
-
-    .qr-url {
-        color: #d97706;
-        font-weight: 500;
-        font-size: 13.5px;
-        text-decoration: none;
-    }
-
-    .qr-url:hover {
-        text-decoration: underline;
-    }
-
-    .qr-preview {
-        width: 72px;
-        height: 72px;
-        padding: 6px;
-        border: 1px solid #e5e7eb;
-        border-radius: 10px;
-        background: #fff;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .qr-preview svg {
-        width: 60px;
-        height: 60px;
-    }
-
-    .action-btn {
-        width: 36px;
-        height: 36px;
-        border-radius: 10px;
-        border: 1px solid #e5e7eb;
-        background: #fff;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: background .15s, border-color .15s;
-        text-decoration: none;
-        color: inherit;
-    }
-
-    .action-btn:hover {
-        background: #f3f4f6;
-        border-color: #d1d5db;
-    }
-
-    .action-btn.danger {
-        border-color: #fca5a5;
-    }
-
-    .action-btn.danger:hover {
-        background: #fee2e2;
-    }
-
-    .action-btn.warning {
-        border-color: #fcd34d;
-    }
-
-    .action-btn.warning:hover {
-        background: #fef9c3;
-    }
-
-    .search-box {
-        border-radius: 30px;
-        border: 1px solid #e5e7eb;
-        padding: 9px 16px 9px 40px;
-        font-size: 13px;
-        outline: none;
-        width: 260px;
-        background: #f9fafb;
-    }
-
-    .search-box:focus {
-        border-color: #0b1533;
-        background: #fff;
-    }
-
-    .search-wrap {
-        position: relative;
-    }
-
-    .search-wrap svg {
-        position: absolute;
-        left: 14px;
-        top: 50%;
-        transform: translateY(-50%);
-        pointer-events: none;
-    }
-
-    .card-wrap {
-        background: #fff;
-        border-radius: 24px;
-        border: 1px solid #e5e7eb;
-        overflow: hidden;
-        margin: 28px 30px;
-    }
-
-    .card-top {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 20px 24px;
-        border-bottom: 1px solid #f3f4f6;
-        flex-wrap: wrap;
-        gap: 12px;
-    }
-
-    .card-title {
-        font-size: 20px;
-        font-weight: 700;
-        color: #0b1533;
-    }
-
-    .card-sub {
-        font-size: 12px;
-        color: #9ca3af;
-        margin-top: 2px;
-    }
-
-    .btn-tambah {
-        background: #0b1533;
-        color: #fff;
-        border: none;
-        border-radius: 30px;
-        padding: 9px 18px;
-        font-size: 13px;
-        font-weight: 600;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        transition: background .2s;
-    }
-
-    .btn-tambah:hover {
-        background: #1e2f5e;
-    }
-
-    .empty-state {
-        text-align: center;
-        padding: 60px 20px;
-        color: #9ca3af;
-    }
-
-    #toast-container {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        z-index: 9999;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    .toast-msg {
-        background: #0b1533;
-        color: #fff;
-        padding: 12px 20px;
-        border-radius: 14px;
-        font-size: 13px;
-        font-weight: 500;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, .15);
-        animation: slideIn .3s ease;
-    }
-
-    .toast-msg.success {
-        background: #16a34a;
-    }
-
-    @keyframes slideIn {
-        from {
-            opacity: 0;
-            transform: translateX(20px);
+        body {
+            margin: 0;
+            background: #f5f7fb;
+            font-family: 'Segoe UI', system-ui, sans-serif;
         }
 
-        to {
-            opacity: 1;
-            transform: translateX(0);
+        .admin-layout {
+            display: flex;
         }
-    }
+
+        .admin-content {
+            flex: 1;
+            padding: 0;
+            margin-left: 260px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 30px;
+            border-bottom: 1px solid #e5e7eb;
+            background: #fff;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .topbar strong {
+            color: #111827;
+        }
+
+        .qr-table {
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+        }
+
+        .qr-table thead th {
+            background: #f9fafb;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+            color: #6b7280;
+            padding: 14px 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .qr-table tbody tr {
+            transition: background .15s;
+        }
+
+        .qr-table tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .qr-table tbody td {
+            padding: 18px 20px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: middle;
+        }
+
+        .qr-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .meja-number {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0b1533;
+        }
+
+        .qr-url {
+            color: #d97706;
+            font-weight: 500;
+            font-size: 13.5px;
+            text-decoration: none;
+        }
+
+        .qr-url:hover {
+            text-decoration: underline;
+        }
+
+        .qr-preview {
+            width: 72px;
+            height: 72px;
+            padding: 6px;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            background: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-preview svg {
+            width: 60px;
+            height: 60px;
+        }
+
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            background: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background .15s, border-color .15s;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .action-btn:hover {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+        }
+
+        .action-btn.danger {
+            border-color: #fca5a5;
+        }
+
+        .action-btn.danger:hover {
+            background: #fee2e2;
+        }
+
+        .action-btn.warning {
+            border-color: #fcd34d;
+        }
+
+        .action-btn.warning:hover {
+            background: #fef9c3;
+        }
+
+        .search-box {
+            border-radius: 30px;
+            border: 1px solid #e5e7eb;
+            padding: 9px 16px 9px 40px;
+            font-size: 13px;
+            outline: none;
+            width: 260px;
+            background: #f9fafb;
+        }
+
+        .search-box:focus {
+            border-color: #0b1533;
+            background: #fff;
+        }
+
+        .search-wrap {
+            position: relative;
+        }
+
+        .search-wrap svg {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        .card-wrap {
+            background: #fff;
+            border-radius: 24px;
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+            margin: 28px 30px;
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid #f3f4f6;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0b1533;
+        }
+
+        .card-sub {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 2px;
+        }
+
+        .btn-tambah {
+            background: #0b1533;
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            padding: 9px 18px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background .2s;
+        }
+
+        .btn-tambah:hover {
+            background: #1e2f5e;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #9ca3af;
+        }
+
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .toast-msg {
+            background: #0b1533;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 14px;
+            font-size: 13px;
+            font-weight: 500;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, .15);
+            animation: slideIn .3s ease;
+        }
+
+        .toast-msg.success {
+            background: #16a34a;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
     </style>
 </head>
 
@@ -388,37 +388,36 @@
                             <td style="text-align:right; padding-right:24px;">
                                 <div class="d-flex gap-2 justify-content-end">
                                     {{-- Cetak --}}
-                                    <a href="{{ route('admin.tables.print', $table->table_id) }}" target="_blank"
-                                        class="action-btn" title="Cetak QR Code">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#374151"
-                                            stroke-width="2">
+                                    <a href="{{ route('admin.tables.print', $table->table_id) }}"
+                                        target="_blank" class="action-btn" title="Cetak QR Code">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="2">
                                             <polyline points="6 9 6 2 18 2 18 9" />
-                                            <path
-                                                d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                                            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
                                             <rect x="6" y="14" width="12" height="8" />
                                         </svg>
                                     </a>
-                                    {{-- Regenerate --}}
-                                    <form action="{{ route('admin.tables.regenerate', $table->table_id) }}"
-                                        method="POST">
+
+                                    {{-- Clear History --}}
+                                    <form action="{{ route('admin.tables.clearHistory', $table->table_id) }}" method="POST">
                                         @csrf
-                                        <button type="submit" class="action-btn warning" title="Regenerate Token"
-                                            onclick="return confirm('Regenerate QR Code meja {{ $table->table_number }}?')">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d97706"
-                                                stroke-width="2">
+                                        <button type="submit" class="action-btn" title="Bersihkan Riwayat Order"
+                                            style="border-color: #bfdbfe;"
+                                            onclick="return confirm('Hapus semua riwayat order selesai/dibatalkan meja {{ $table->table_number }}?')">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2">
                                                 <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
                                                 <path d="M3 3v5h5" />
                                             </svg>
                                         </button>
                                     </form>
-                                    {{-- Hapus --}}
+
+                                    {{-- Hapus Meja — hanya aktif untuk nomor terbesar --}}
+                                    @if((int)$table->table_number === (int)$maxNumber)
                                     <form action="{{ route('admin.tables.destroy', $table->table_id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="action-btn danger" title="Hapus Meja"
                                             onclick="return confirm('Hapus meja {{ $table->table_number }}?')">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444"
-                                                stroke-width="2">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2">
                                                 <polyline points="3 6 5 6 21 6" />
                                                 <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
                                                 <path d="M10 11v6" />
@@ -427,6 +426,19 @@
                                             </svg>
                                         </button>
                                     </form>
+                                    @else
+                                    {{-- Tombol hapus dikunci (disabled) untuk meja bukan terbesar --}}
+                                    <button class="action-btn" title="Hapus meja {{ $maxNumber }} terlebih dahulu"
+                                        disabled style="opacity:0.3; cursor:not-allowed;">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2">
+                                            <polyline points="3 6 5 6 21 6" />
+                                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                                            <path d="M10 11v6" />
+                                            <path d="M14 11v6" />
+                                            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                                        </svg>
+                                    </button>
+                                    @endif
                                 </div>
                             </td>
                         </tr>
@@ -472,9 +484,9 @@
     {{-- Buka modal otomatis jika ada error validasi --}}
     @if($errors->has('table_number'))
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        new bootstrap.Modal(document.getElementById('modalTambah')).show();
-    });
+        document.addEventListener('DOMContentLoaded', function() {
+            new bootstrap.Modal(document.getElementById('modalTambah')).show();
+        });
     </script>
     @endif
 

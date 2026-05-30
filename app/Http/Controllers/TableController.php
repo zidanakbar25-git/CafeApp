@@ -26,7 +26,7 @@ class TableController extends Controller
             ->value('max_num');
         $nextTableNumber = ($maxNumber ?? 0) + 1;
 
-        return view('admin.tables.index', compact('tables', 'nextTableNumber'));
+        return view('admin.tables.index', compact('tables', 'nextTableNumber', 'maxNumber'));
     }
 
     /**
@@ -48,27 +48,54 @@ class TableController extends Controller
     }
 
     /**
-     * Regenerate token QR Code meja
+     * Hapus semua riwayat order (kecuali draft aktif) untuk meja ini
      */
-    public function regenerate(CafeTable $table)
+    public function clearHistory(CafeTable $table)
     {
-        $table->regenerateToken();
+        $orders = \App\Models\Order::where('table_id', $table->table_id)
+            ->whereIn('status', ['selesai', 'dibatalkan'])
+            ->get();
+
+        foreach ($orders as $order) {
+            \App\Models\Payment::where('order_id', $order->order_id)->delete();
+            $order->orderDetails()->delete();
+            $order->delete();
+        }
 
         return redirect()->route('admin.tables.index')
-            ->with('success', 'QR Code meja ' . $table->table_number . ' berhasil diperbarui.');
+            ->with('success', 'Riwayat order meja ' . $table->table_number . ' berhasil dibersihkan.');
     }
 
     /**
-     * Hapus meja
+     * Hapus meja — hanya bisa dari nomor terbesar
      */
     public function destroy(CafeTable $table)
     {
-        // Cek apakah meja masih punya order
-        $hasOrders = \App\Models\Order::where('table_id', $table->table_id)->exists();
+        // Cek apakah ini meja dengan nomor terbesar
+        $maxNumber = CafeTable::selectRaw('MAX(CAST(table_number AS UNSIGNED)) as max_num')
+            ->value('max_num');
 
-        if ($hasOrders) {
+        if ((int) $table->table_number !== (int) $maxNumber) {
             return redirect()->route('admin.tables.index')
-                ->with('error', 'Meja ' . $table->table_number . ' tidak bisa dihapus karena masih memiliki riwayat pesanan.');
+                ->with('error', 'Meja hanya bisa dihapus dari nomor terbesar. Hapus meja ' . $maxNumber . ' terlebih dahulu.');
+        }
+
+        // Cek apakah ada order aktif (selain draft)
+        $hasActiveOrders = \App\Models\Order::where('table_id', $table->table_id)
+            ->whereNotIn('status', ['draft', 'selesai', 'dibatalkan'])
+            ->exists();
+
+        if ($hasActiveOrders) {
+            return redirect()->route('admin.tables.index')
+                ->with('error', 'Meja ' . $table->table_number . ' tidak bisa dihapus karena masih ada pesanan aktif.');
+        }
+
+        // Hapus draft & riwayat selesai/dibatalkan
+        $orders = \App\Models\Order::where('table_id', $table->table_id)->get();
+        foreach ($orders as $order) {
+            \App\Models\Payment::where('order_id', $order->order_id)->delete();
+            $order->orderDetails()->delete();
+            $order->delete();
         }
 
         $nomor = $table->table_number;
