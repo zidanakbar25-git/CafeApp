@@ -10,6 +10,7 @@ use App\Http\Controllers\AdminLoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\TableController;
 
 /*
 |--------------------------------------------------------------------------
@@ -149,4 +150,17 @@ Route::middleware('auth')->group(function () {
     */
     Route::get('/admin/orders/history', [HistoryController::class, 'index'])->name('admin.orders.history');
 
+
+    // Admin - Manajemen Meja
+Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () {
+    // ... route admin lainnya ...
+
+    Route::get('/tables', [TableController::class, 'index'])->name('tables.index');
+    Route::post('/tables', [TableController::class, 'store'])->name('tables.store');
+    Route::post('/tables/{table}/regenerate', [TableController::class, 'regenerate'])->name('tables.regenerate');
+    Route::delete('/tables/{table}', [TableController::class, 'destroy'])->name('tables.destroy');
+    Route::get('/tables/{table}/print', [TableController::class, 'print'])->name('tables.print');
+});
+
+    
 });

@@ -16,40 +16,24 @@ class MenuController extends Controller
             ->where('table_number', $table)
             ->first();
 
-        /*
-        |--------------------------------------------------------------------------
-        | ACTIVE ORDER — cari draft yang ada untuk meja ini
-        | Kalau tidak ada, buat satu. Kalau ada lebih dari satu, hapus yang lama.
-        |--------------------------------------------------------------------------
-        */
-
-        // Hapus semua draft lama untuk meja ini (bersihkan tumpukan)
+        // Cari draft yang sudah ada saja, TIDAK buat baru
         $drafts = Order::where('table_id', $tableData->table_id)
             ->where('status', 'draft')
             ->orderBy('order_id', 'desc')
             ->get();
 
-        // Simpan draft terbaru, hapus sisanya
+        // Bersihkan draft duplikat, pakai yang terbaru
         $order = null;
         foreach ($drafts as $i => $draft) {
             if ($i === 0) {
-                $order = $draft; // pakai yang terbaru
+                $order = $draft;
             } else {
-                // Hapus draft lama beserta detailnya
                 $draft->orderDetails()->delete();
                 $draft->delete();
             }
         }
 
-        // Tidak ada draft sama sekali → buat baru
-        if (!$order) {
-            $order = Order::create([
-                'table_id'     => $tableData->table_id,
-                'order_code'   => 'ORD-' . strtoupper(Str::random(6)),
-                'status'       => 'draft',
-                'total_amount' => 0,
-            ]);
-        }
+        // $order bisa null jika belum ada draft — tidak apa-apa
 
         $categories    = DB::table('categories')->get();
         $subCategories = DB::table('sub_categories')->get();
