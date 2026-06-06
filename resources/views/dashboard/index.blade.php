@@ -123,7 +123,9 @@
 
             <!-- Header -->
             <div style="font-size:34px;font-weight:700;color:#0b1533;">Dashboard</div>
-            <div style="color:#6b7280;margin-bottom:28px;">Ringkasan pesanan dan aktivitas hari ini.</div>
+            <div style="color:#6b7280;margin-bottom:28px;">Selamat Datang, <b>{{ auth()->user()->username }}</b></div>
+
+
 
             {{-- Stats hanya tampil untuk kasir / semua role KECUALI manager --}}
             @if(auth()->user()->role !== 'manager')
@@ -357,12 +359,6 @@
                                                     ↩ Kembalikan
                                                 </button>
 
-                                            {{-- DIBATALKAN: Kembalikan --}}
-                                            @elseif($order->status === 'dibatalkan')
-                                                <button class="btn-kembali"
-                                                        onclick="kembalikan({{ $order->order_id }})">
-                                                    ↩ Kembalikan
-                                                </button>
                                             @endif
                                         </div>
 
