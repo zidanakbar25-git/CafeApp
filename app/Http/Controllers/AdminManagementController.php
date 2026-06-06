@@ -13,9 +13,12 @@ class AdminManagementController extends Controller
     // ── INDEX ──────────────────────────────────────────
     public function index()
     {
-        $admins = Admin::orderBy('admin_id')->get();
+        $admins = Admin::where('role', 'cashier')
+            ->orderBy('admin_id')
+            ->get();
         return view('admin.admins.index', compact('admins'));
     }
+
 
     // ── CREATE ─────────────────────────────────────────
     public function create()
@@ -30,23 +33,18 @@ class AdminManagementController extends Controller
         $this->authorizeSuper();
 
         $request->validate([
-            'name'     => 'required|string|max:100',
-            'username' => 'required|string|max:50|unique:admins,username',
-            'email'    => 'required|email|unique:admins,email',
+            'username' => 'required|string|max:100|unique:admins,username',
             'password' => 'required|string|min:6|confirmed',
         ]);
 
         Admin::create([
-            'name'      => $request->name,
-            'username'  => $request->username,
-            'email'     => $request->email,
-            'password'  => Hash::make($request->password),
-            'role'      => 'cashier', 
-            'is_active' => true,
+            'username' => $request->username,
+            'password' => Hash::make($request->password),
+            'role'     => 'cashier',
         ]);
 
         return redirect()->route('admin.admins.index')
-            ->with('success', 'Akun cashier berhasil ditambahkan.');
+            ->with('success', 'Akun kasir berhasil ditambahkan.');
     }
 
     // ── EDIT ───────────────────────────────────────────
@@ -71,19 +69,15 @@ class AdminManagementController extends Controller
         $admin = Admin::findOrFail($id);
 
         $request->validate([
-            'name'     => 'required|string|max:100',
-            'username' => 'required|string|max:50|unique:admins,username,' . $id . ',admin_id',
-            'email'    => 'required|email|unique:admins,email,' . $id . ',admin_id',
+            'username' => 'required|string|max:100|unique:admins,username,' . $id . ',admin_id',
         ]);
 
         $admin->update([
-            'name'     => $request->name,
             'username' => $request->username,
-            'email'    => $request->email,
         ]);
 
         return redirect()->route('admin.admins.index')
-            ->with('success', 'Admin berhasil diperbarui.');
+            ->with('success', 'Akun kasir berhasil diperbarui.');
     }
 
     public function destroy($id)
@@ -115,4 +109,3 @@ class AdminManagementController extends Controller
         ]);
     }
 }
-    

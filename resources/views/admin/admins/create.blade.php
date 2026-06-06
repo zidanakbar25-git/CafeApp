@@ -83,12 +83,7 @@
             <form method="POST" action="{{ route('admin.admins.store') }}">
                 @csrf
 
-                <div class="mb-3">
-                    <label class="form-label">Nama Lengkap</label>
-                    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
-                        value="{{ old('name') }}" placeholder="Contoh: Budi Santoso" required>
-                    @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                </div>
+                
 
                 <div class="mb-3">
                     <label class="form-label">Username</label>
@@ -97,15 +92,9 @@
                     @error('username')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
-                        value="{{ old('email') }}" placeholder="budi@email.com" required>
-                    @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                </div>
+                
 
-                <hr class="divider">
-
+               
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Password</label>
