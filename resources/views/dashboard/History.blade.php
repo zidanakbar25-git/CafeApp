@@ -132,31 +132,151 @@
                             <div class="page-sub">Lihat riwayat semua pesanan (read-only)</div>
                         </div>
 
-                        <!-- Search -->
                         <form method="GET" action="{{ route('admin.orders.history') }}">
-                            <div class="d-flex gap-2 align-items-center">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" style="position:absolute;margin-left:12px;pointer-events:none;">
-                                    <circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                                </svg>
-                                <input type="text" name="search"
-                                       class="search-box"
-                                       style="padding-left:36px;"
-                                       value="{{ request('search') }}"
-                                       placeholder="Cari ID order, nama, atau meja...">
+                            <div class="d-flex flex-wrap gap-2 align-items-end">
+
+                                <!-- Search -->
+                                <div>
+                                    <label class="small text-muted mb-1 d-block">
+                                        Cari Pesanan
+                                    </label>
+                                    <input type="text"
+                                        name="search"
+                                        class="search-box"
+                                        value="{{ request('search') }}"
+                                        placeholder="Cari ID order, nama, atau meja...">
+                                </div>
+
+                                <!-- Status -->
+                                <div>
+                                    <label class="small text-muted mb-1 d-block">
+                                        Status
+                                    </label>
+                                    <select name="status"
+                                            class="form-select"
+                                            style="width:170px;border-radius:20px;font-size:13px;">
+                                        <option value="">Semua Status</option>
+                                        <option value="selesai"
+                                            {{ request('status') == 'selesai' ? 'selected' : '' }}>
+                                            Selesai
+                                        </option>
+                                        <option value="dibatalkan"
+                                            {{ request('status') == 'dibatalkan' ? 'selected' : '' }}>
+                                            Dibatalkan
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <!-- Pembayaran -->
+                                <div>
+                                    <label class="small text-muted mb-1 d-block">
+                                        Pembayaran
+                                    </label>
+                                    <select name="payment"
+                                            class="form-select"
+                                            style="width:170px;border-radius:20px;font-size:13px;">
+                                        <option value="">Semua Pembayaran</option>
+                                        <option value="cash"
+                                            {{ request('payment') == 'cash' ? 'selected' : '' }}>
+                                            Cash
+                                        </option>
+                                        <option value="qris"
+                                            {{ request('payment') == 'qris' ? 'selected' : '' }}>
+                                            QRIS
+                                        </option>
+                                        <option value="transfer"
+                                            {{ request('payment') == 'transfer' ? 'selected' : '' }}>
+                                            Transfer
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <!-- Dari Tanggal -->
+                                <div>
+                                    <label class="small text-muted mb-1 d-block">
+                                        Dari Tanggal
+                                    </label>
+                                    <input type="date"
+                                        name="start_date"
+                                        class="form-control"
+                                        style="width:170px;border-radius:20px;font-size:13px;"
+                                        value="{{ request('start_date') }}">
+                                </div>
+
+                                <!-- Sampai Tanggal -->
+                                <div>
+                                    <label class="small text-muted mb-1 d-block">
+                                        Sampai Tanggal
+                                    </label>
+                                    <input type="date"
+                                        name="end_date"
+                                        class="form-control"
+                                        style="width:170px;border-radius:20px;font-size:13px;"
+                                        value="{{ request('end_date') }}">
+                                </div>
+
+                                <!-- Tombol -->
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-dark">
+                                        Filter
+                                    </button>
+
+                                    <a href="{{ route('admin.orders.history') }}"
+                                    class="btn btn-outline-secondary">
+                                        Reset
+                                    </a>
+                                </div>
+
                             </div>
+
                         </form>
-                    </div>
-                </div>
 
                 <!-- Summary bar -->
                 <div class="summary-bar">
-                    <span>Total: <strong>{{ $orders->count() }} pesanan</strong></span>
-                    <span>Selesai: <strong>{{ $orders->where('status','selesai')->count() }}</strong></span>
-                    <span>Dibatalkan: <strong>{{ $orders->where('status','dibatalkan')->count() }}</strong></span>
+                    <span>
+                        Total:
+                        <strong>{{ $orders->count() }} pesanan</strong>
+                    </span>
+
+                    <span>
+                        Selesai:
+                        <strong>{{ $orders->where('status','selesai')->count() }}</strong>
+                    </span>
+
+                    <span>
+                        Dibatalkan:
+                        <strong>{{ $orders->where('status','dibatalkan')->count() }}</strong>
+                    </span>
+
                     @if(request('search'))
                         <span style="color:#6b7280;">
-                            Hasil pencarian: "<strong>{{ request('search') }}</strong>"
-                            <a href="{{ route('admin.orders.history') }}" style="color:#dc2626;margin-left:6px;font-size:12px;">✕ Hapus</a>
+                            Hasil pencarian:
+                            "<strong>{{ request('search') }}</strong>"
+                        </span>
+                    @endif
+
+                    @if(request('status'))
+                        <span>
+                            Status:
+                            <strong>{{ ucfirst(request('status')) }}</strong>
+                        </span>
+                    @endif
+
+                    @if(request('payment'))
+                        <span>
+                            Pembayaran:
+                            <strong>{{ strtoupper(request('payment')) }}</strong>
+                        </span>
+                    @endif
+
+                    @if(request('start_date') || request('end_date'))
+                        <span>
+                            Periode:
+                            <strong>
+                                {{ request('start_date') ?: '-' }}
+                                s/d
+                                {{ request('end_date') ?: '-' }}
+                            </strong>
                         </span>
                     @endif
                 </div>
