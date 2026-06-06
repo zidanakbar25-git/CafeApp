@@ -130,7 +130,7 @@ class AdminMenuController extends Controller
             'description' => $request->description,
             'price'       => $request->price,
             'image_url'   => $imagePath ?? 'images/menu/default.jpg',
-            'is_active'   => $request->boolean('is_active', true),
+            'is_active'   => true, // 
             'created_at'  => now(),
             'updated_at'  => now(),
         ]);

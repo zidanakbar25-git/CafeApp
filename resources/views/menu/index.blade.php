@@ -72,7 +72,7 @@
 
                 <div class="card menu-card shadow-sm">
 
-                    <img src="{{ asset($menu->image_url) }}" class="menu-img w-100">
+                    <img src="{{ asset('storage/' . $menu->image_url) }}" class="menu-img w-100">
 
                     <div class="p-2">
 
