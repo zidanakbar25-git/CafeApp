@@ -11,8 +11,13 @@ return new class extends Migration
         Schema::create('admins', function (Blueprint $table) {
             $table->increments('admin_id');
             $table->string('username', 100)->unique();
-            $table->string('password_hash');
-            $table->enum('role', ['Manager', 'cashier'])->default('cashier');
+
+            
+            $table->string('password');
+
+            
+            $table->enum('role', ['manager', 'cashier'])->default('cashier');
+
             $table->timestamps();
         });
     }

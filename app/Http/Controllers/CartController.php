@@ -15,20 +15,28 @@ class CartController extends Controller
      *
      * @param  int  $order_id  Defaults to 1 (dummy order)
      */
-public function index(int $order_id = 1): \Illuminate\View\View|\Illuminate\Http\RedirectResponse
-{
-    $order = Order::with([
-        'orderDetails' => fn($q) => $q->with('menu')->orderBy('detail_id'),
-    ])->findOrFail($order_id);
+    public function index(int $order_id = 1): \Illuminate\View\View|\Illuminate\Http\RedirectResponse
+    {
+        $order = Order::with([
+            'orderDetails' => fn($q) => $q->with('menu')->orderBy('detail_id'),
+        ])->findOrFail($order_id);
 
-    if (in_array($order->status, ['diproses', 'selesai', 'paid'])) {
-        return redirect('/payment/' . $order_id);
+        // Redirect jika order sudah melewati tahap cart
+        // pending_cash & menunggu (sudah dibayar) = sudah di antrian kasir, tidak bisa edit cart lagi
+        if (in_array($order->status, ['diproses', 'selesai', 'paid', 'pending_cash'])) {
+            return redirect('/payment/' . $order_id);
+        }
+
+        if ($order->status === 'menunggu' && $order->paid_at !== null) {
+            return redirect('/payment/' . $order_id);
+        }
+
+        // draft = order kosong untuk meja berikutnya, boleh diisi item (alur normal)
+
+        $totalItems = $order->orderDetails->sum('quantity');
+
+        return view('cart.index', compact('order', 'totalItems'));
     }
-
-    $totalItems = $order->orderDetails->sum('quantity');
-
-    return view('cart.index', compact('order', 'totalItems'));
-}
 
     /**
      * Update the quantity of a cart item (increment or decrement).
@@ -91,66 +99,80 @@ public function index(int $order_id = 1): \Illuminate\View\View|\Illuminate\Http
     /**
      * Process checkout for the order.
      */
-public function checkout(int $order_id): RedirectResponse
-{
-    $order = Order::with('orderDetails')->findOrFail($order_id);
+    public function checkout(int $order_id): RedirectResponse
+    {
+        $order = Order::with('orderDetails')->findOrFail($order_id);
 
-    if ($order->orderDetails->isEmpty()) {
-        return redirect()
-            ->route('cart.index', ['order_id' => $order_id])
-            ->with('error', 'Keranjang kosong.');
+        if ($order->orderDetails->isEmpty()) {
+            return redirect()
+                ->route('cart.index', ['order_id' => $order_id])
+                ->with('error', 'Keranjang kosong.');
+        }
+
+        $order->recalculateTotal();
+        return redirect('/payment/' . $order_id);
     }
 
-    $order->recalculateTotal();
-    return redirect('/payment/' . $order_id);
-}
-
     /**
- * Add a menu item to the cart (order_details).
- */
-public function addItem(Request $request): RedirectResponse
-{
-    $request->validate([
-        'menu_id'  => 'required|integer|exists:menus,menu_id',
-        'order_id' => 'required|integer|exists:orders,order_id',
-    ]);
+     * Add a menu item to the cart (order_details).
+     */
+    public function addItem(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $request->validate([
+            'menu_id'  => 'required|integer|exists:menus,menu_id',
+            'table_id' => 'required|integer|exists:cafe_tables,table_id',
+        ]);
 
-    $menu  = \App\Models\Menu::findOrFail($request->menu_id);
-    $order = Order::findOrFail($request->order_id);
+        $menu = \App\Models\Menu::findOrFail($request->menu_id);
 
-    // Cek apakah menu sudah ada di cart
-    $detail = OrderDetail::where('order_id', $request->order_id)
-                         ->where('menu_id', $request->menu_id)
-                         ->first();
+        // Cari draft yang ada, kalau tidak ada baru create
+        $order = Order::where('table_id', $request->table_id)
+            ->where('status', 'draft')
+            ->latest()
+            ->first();
 
-    if ($detail) {
-        // Kalau sudah ada, increment qty saja
-        $detail->quantity += 1;
-        $detail->recalculateSubtotal();
-    } else {
-        // Kalau belum ada, buat baris baru
-        $detail = OrderDetail::create([
-            'order_id'   => $order->order_id,
-            'menu_id'    => $menu->menu_id,
-            'quantity'   => 1,
-            'unit_price' => $menu->price,
-            'subtotal'   => $menu->price,
+        if (!$order) {
+            $order = Order::create([
+                'table_id'     => $request->table_id,
+                'order_code'   => 'ORD-' . strtoupper(\Illuminate\Support\Str::random(6)),
+                'status'       => 'draft',
+                'total_amount' => 0,
+            ]);
+        }
+
+        $detail = OrderDetail::where('order_id', $order->order_id)
+            ->where('menu_id', $request->menu_id)
+            ->first();
+
+        if ($detail) {
+            $detail->quantity += 1;
+            $detail->recalculateSubtotal();
+        } else {
+            OrderDetail::create([
+                'order_id'   => $order->order_id,
+                'menu_id'    => $menu->menu_id,
+                'quantity'   => 1,
+                'unit_price' => $menu->price,
+                'subtotal'   => $menu->price,
+            ]);
+        }
+
+        $order->recalculateTotal();
+
+        return response()->json([
+            'success'  => true,
+            'order_id' => $order->order_id,  // ← penting, dikirim balik ke JS
         ]);
     }
 
-    $order->recalculateTotal();
+    /**
+     * Return total item count as JSON (for badge update).
+     */
+    public function getCount(int $order_id): \Illuminate\Http\JsonResponse
+    {
+        $order = Order::with('orderDetails')->findOrFail($order_id);
+        $totalItems = $order->orderDetails->sum('quantity');
 
-    return back()->with('success', "{$menu->name} ditambahkan ke keranjang!");
-}
-
-/**
- * Return total item count as JSON (for badge update).
- */
-public function getCount(int $order_id): \Illuminate\Http\JsonResponse
-{
-    $order = Order::with('orderDetails')->findOrFail($order_id);
-    $totalItems = $order->orderDetails->sum('quantity');
-
-    return response()->json(['count' => $totalItems]);
-}
+        return response()->json(['count' => $totalItems]);
+    }
 }

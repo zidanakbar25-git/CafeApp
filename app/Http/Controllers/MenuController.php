@@ -4,70 +4,39 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
 use App\Models\Order;
+use App\Models\OrderDetail;
+use App\Models\Payment;
 use Illuminate\Support\Str;
 
 class MenuController extends Controller
 {
     public function index($table)
     {
-        /*
-        |--------------------------------------------------------------------------
-        | AMBIL DATA MEJA
-        |--------------------------------------------------------------------------
-        */
-
         $tableData = DB::table('cafe_tables')
             ->where('table_number', $table)
             ->first();
 
-        /*
-        |--------------------------------------------------------------------------
-        | ACTIVE ORDER
-        |--------------------------------------------------------------------------
-        */
+        // Cari draft yang sudah ada saja, TIDAK buat baru
+        $drafts = Order::where('table_id', $tableData->table_id)
+            ->where('status', 'draft')
+            ->orderBy('order_id', 'desc')
+            ->get();
 
-        $order = Order::where('table_id', $tableData->table_id)
-            ->where('status', 'menunggu')
-            ->latest()
-            ->first();
-
-        /*
-        |--------------------------------------------------------------------------
-        | CREATE ORDER IF NOT EXISTS
-        |--------------------------------------------------------------------------
-        */
-
-        if (!$order) {
-
-            $order = Order::create([
-                'table_id'      => $tableData->table_id,
-                'order_code'    => 'ORD-' . strtoupper(Str::random(6)),
-                'status'        => 'menunggu',
-                'total_amount'  => 0,
-            ]);
+        // Bersihkan draft duplikat, pakai yang terbaru
+        $order = null;
+        foreach ($drafts as $i => $draft) {
+            if ($i === 0) {
+                $order = $draft;
+            } else {
+                $draft->orderDetails()->delete();
+                $draft->delete();
+            }
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | CATEGORY
-        |--------------------------------------------------------------------------
-        */
+        // $order bisa null jika belum ada draft — tidak apa-apa
 
-        $categories = DB::table('categories')->get();
-
-        /*
-        |--------------------------------------------------------------------------
-        | SUB CATEGORY
-        |--------------------------------------------------------------------------
-        */
-
+        $categories    = DB::table('categories')->get();
         $subCategories = DB::table('sub_categories')->get();
-
-        /*
-        |--------------------------------------------------------------------------
-        | MENU
-        |--------------------------------------------------------------------------
-        */
 
         $menus = DB::table('menus')
             ->join('sub_categories', 'menus.sub_id', '=', 'sub_categories.sub_id')
@@ -79,12 +48,6 @@ class MenuController extends Controller
             )
             ->where('menus.is_active', true)
             ->get();
-
-        /*
-        |--------------------------------------------------------------------------
-        | RETURN VIEW
-        |--------------------------------------------------------------------------
-        */
 
         return view('menu.index', compact(
             'tableData',

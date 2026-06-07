@@ -103,9 +103,8 @@
 
             <div class="summary-row">
                 <span>Waktu Pembayaran</span>
-
                 <span>
-                    {{ \Carbon\Carbon::parse($payment->paid_at ?? now())->format('d M Y H:i') }}
+                    {{ \Carbon\Carbon::parse($order->paid_at ?? now())->setTimezone('Asia/Jakarta')->format('d M Y H:i') }}
                 </span>
             </div>
 
@@ -260,7 +259,7 @@
 
         <div>
             <strong>Date</strong> :
-            {{ \Carbon\Carbon::parse($payment->paid_at ?? now())->format('d M Y H:i') }}
+            {{ \Carbon\Carbon::parse($order->paid_at ?? now())->setTimezone('Asia/Jakarta')->format('d M Y H:i') }}
         </div>
 
     </div>
