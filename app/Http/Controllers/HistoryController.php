@@ -7,22 +7,44 @@ use Illuminate\Http\Request;
 
 class HistoryController extends Controller
 {
-    public function index(Request $request)
-    {
+    public function index(Request $request){
         $query = Order::with(['orderDetails.menu', 'payments'])
-            ->whereIn('status', ['selesai', 'dibatalkan'])
-            ->latest();
+            ->whereIn('status', ['selesai', 'dibatalkan']);
 
+        // Search
         if ($request->filled('search')) {
             $search = $request->search;
+
             $query->where(function ($q) use ($search) {
                 $q->where('order_code', 'like', "%{$search}%")
-                  ->orWhere('customer_name', 'like', "%{$search}%")
-                  ->orWhere('table_id', 'like', "%{$search}%");
+                ->orWhere('customer_name', 'like', "%{$search}%")
+                ->orWhere('table_id', 'like', "%{$search}%");
             });
         }
 
-        $orders = $query->get();
+        // Filter Status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Filter Tanggal Awal
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+
+        // Filter Tanggal Akhir
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        // Filter Metode Pembayaran
+        if ($request->filled('payment')) {
+            $query->whereHas('payments', function ($q) use ($request) {
+                $q->where('payment_method', $request->payment);
+            });
+        }
+
+        $orders = $query->latest()->get();
 
         return view('dashboard.history', compact('orders'));
     }
