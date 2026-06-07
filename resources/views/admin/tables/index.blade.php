@@ -368,7 +368,7 @@
                             <th style="width:80px;">Meja</th>
                             <th>Link QR Code Target</th>
                             <th style="width:120px; text-align:center;">Preview</th>
-                            <th style="width:140px; text-align:right; padding-right:28px;">Aksi</th>
+                            <th style="width:140px; text-align:center; padding-right:28px;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -397,26 +397,14 @@
                                         </svg>
                                     </a>
 
-                                    {{-- Clear History --}}
-                                    <form action="{{ route('admin.tables.clearHistory', $table->table_id) }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="action-btn" title="Bersihkan Riwayat Order"
-                                            style="border-color: #bfdbfe;"
-                                            onclick="return confirm('Hapus semua riwayat order selesai/dibatalkan meja {{ $table->table_number }}?')">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2">
-                                                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-                                                <path d="M3 3v5h5" />
-                                            </svg>
-                                        </button>
-                                    </form>
+                                    
 
-                                    {{-- Hapus Meja — hanya aktif untuk nomor terbesar --}}
-                                    @if((int)$table->table_number === (int)$maxNumber)
+                                    {{-- Hapus Meja --}}
                                     <form action="{{ route('admin.tables.destroy', $table->table_id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="action-btn danger" title="Hapus Meja"
-                                            onclick="return confirm('Hapus meja {{ $table->table_number }}?')">
+                                            onclick="return confirm('Hapus meja {{ $table->table_number }}? Riwayat pesanan tetap tersimpan.')">
                                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2">
                                                 <polyline points="3 6 5 6 21 6" />
                                                 <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
@@ -426,19 +414,6 @@
                                             </svg>
                                         </button>
                                     </form>
-                                    @else
-                                    {{-- Tombol hapus dikunci (disabled) untuk meja bukan terbesar --}}
-                                    <button class="action-btn" title="Hapus meja {{ $maxNumber }} terlebih dahulu"
-                                        disabled style="opacity:0.3; cursor:not-allowed;">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2">
-                                            <polyline points="3 6 5 6 21 6" />
-                                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                                            <path d="M10 11v6" />
-                                            <path d="M14 11v6" />
-                                            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
-                                        </svg>
-                                    </button>
-                                    @endif
                                 </div>
                             </td>
                         </tr>
@@ -456,18 +431,18 @@
         <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content" style="border-radius:20px; border:none;">
                 <div class="modal-body p-4">
-                    <h6 style="font-weight:700;color:#0b1533;margin-bottom:4px;">Tambah Meja Baru</h6>
-                    <p style="font-size:12px;color:#9ca3af;margin-bottom:16px;">
-                        Meja berikutnya: <strong style="color:#0b1533;">{{ $nextTableNumber }}</strong>
-                    </p>
+                    <h6 style="font-weight:700;color:#0b1533;margin-bottom:16px;">Tambah Meja Baru</h6>
                     <form action="{{ route('admin.tables.store') }}" method="POST">
                         @csrf
-                        {{-- Kirim nomor otomatis, tidak perlu input manual --}}
-                        <input type="hidden" name="table_number" value="{{ $nextTableNumber }}">
-                        <div
-                            style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:14px;text-align:center;margin-bottom:16px;">
-                            <div style="font-size:12px;color:#6b7280;margin-bottom:4px;">Nomor meja akan dibuat</div>
-                            <div style="font-size:36px;font-weight:700;color:#0b1533;">{{ $nextTableNumber }}</div>
+                        <div style="margin-bottom:16px;">
+                            <label style="font-size:12px;color:#6b7280;margin-bottom:6px;display:block;">Nomor Meja</label>
+                            <input type="number" name="table_number"
+                                class="form-control @error('table_number') is-invalid @enderror"
+                                placeholder="Contoh: 1" min="1" autofocus
+                                style="border-radius:10px;">
+                            @error('table_number')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="d-flex gap-2">
                             <button type="button" class="btn btn-light flex-fill" data-bs-dismiss="modal">Batal</button>
@@ -478,7 +453,6 @@
             </div>
         </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     {{-- Buka modal otomatis jika ada error validasi --}}

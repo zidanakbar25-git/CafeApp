@@ -8,9 +8,9 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('orders', function ($table) {
+        Schema::create('orders', function (Blueprint $table) {
             $table->increments('order_id');
-            $table->unsignedInteger('table_id');
+            $table->unsignedInteger('table_id')->nullable();
 
             $table->string('order_code')->unique();
             $table->string('customer_name')->nullable();
@@ -29,8 +29,11 @@ return new class extends Migration
 
             $table->timestamps();
 
-            $table->foreign('table_id')->references('table_id')->on('cafe_tables');
-});
+            $table->foreign('table_id')
+                  ->references('table_id')
+                  ->on('cafe_tables')
+                  ->onDelete('set null');
+        });
     }
 
     public function down(): void

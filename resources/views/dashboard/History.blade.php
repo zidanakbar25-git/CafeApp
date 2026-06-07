@@ -420,7 +420,7 @@
                                             <th>Total</th>
                                             <th>Bayar</th>
                                             <th>Status</th>
-                                            <th></th>
+                                            <th>Struk</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -464,7 +464,12 @@
                                             <td>
                                                 <a href="{{ route('admin.orders.struk', $order->order_id) }}"
                                                     target="_blank" class="btn-struk">
-                                                    🖨 Struk
+
+                                                    <img src="{{ asset('images/icons/receipt.png') }}"
+                                                        alt="Struk"
+                                                        width="20">
+
+
                                                 </a>
                                             </td>
                                         </tr>

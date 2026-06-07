@@ -364,7 +364,7 @@
 
                                         <div class="d-flex gap-2">
                                             {{-- Struk: tampil jika sudah ada pembayaran --}}
-                                            @if(in_array($order->status, ['selesai','menunggu','diproses','pending_cash']))
+                                            @if($order->status === 'selesai')
                                             <a href="{{ route('admin.orders.struk', $order->order_id) }}"
                                                target="_blank" class="btn-struk">
                                                 
