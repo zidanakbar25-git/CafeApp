@@ -3,26 +3,58 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
+use App\Models\CafeTable;
 use App\Models\Order;
-use App\Models\OrderDetail;
-use App\Models\Payment;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class MenuController extends Controller
 {
-    public function index($table)
+    public function index($table, Request $request)
     {
-        $tableData = DB::table('cafe_tables')
-            ->where('table_number', $table)
-            ->first();
+        $tableData = CafeTable::where('table_number', $table)->first();
+        if (!$tableData) abort(404);
 
-        // Cari draft yang sudah ada saja, TIDAK buat baru
+        $sessionKey = 'table_session_' . $tableData->table_id;
+
+        // Cek apakah customer scan QR (ada query ?scan=1)
+        if ($request->query('scan')) {
+            // Generate session baru
+            session([
+                $sessionKey => [
+                    'token'      => Str::random(32),
+                    'expires_at' => now()->addMinutes(30)->timestamp,
+                ]
+            ]);
+            
+            return redirect()->route('menu.index', ['table' => $table]);
+        }
+
+        // Cek session
+        $sessionData = session($sessionKey);
+
+        
+
+        if (!$sessionData || now()->timestamp > $sessionData['expires_at']) {
+            // Session tidak ada atau expired
+            session()->forget($sessionKey);
+            return view('customer.session-expired', ['tableNumber' => $table]);
+        }
+
+        // Session valid — refresh timer
+        session([
+            $sessionKey => [
+                'token'      => $sessionData['token'],
+                'expires_at' => now()->addMinutes(30)->timestamp,
+            ]
+        ]);
+
+        // Cari draft
         $drafts = Order::where('table_id', $tableData->table_id)
             ->where('status', 'draft')
             ->orderBy('order_id', 'desc')
             ->get();
 
-        // Bersihkan draft duplikat, pakai yang terbaru
         $order = null;
         foreach ($drafts as $i => $draft) {
             if ($i === 0) {
@@ -33,28 +65,16 @@ class MenuController extends Controller
             }
         }
 
-        // $order bisa null jika belum ada draft — tidak apa-apa
-
         $categories    = DB::table('categories')->get();
         $subCategories = DB::table('sub_categories')->get();
 
         $menus = DB::table('menus')
             ->join('sub_categories', 'menus.sub_id', '=', 'sub_categories.sub_id')
             ->join('categories', 'sub_categories.category_id', '=', 'categories.category_id')
-            ->select(
-                'menus.*',
-                'categories.name as category_name',
-                'sub_categories.name as sub_name'
-            )
+            ->select('menus.*', 'categories.name as category_name', 'sub_categories.name as sub_name')
             ->where('menus.is_active', true)
             ->get();
 
-        return view('menu.index', compact(
-            'tableData',
-            'categories',
-            'subCategories',
-            'menus',
-            'order'
-        ));
+        return view('menu.index', compact('tableData', 'categories', 'subCategories', 'menus', 'order'));
     }
 }

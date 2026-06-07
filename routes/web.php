@@ -18,7 +18,10 @@ use App\Http\Controllers\AdminMenuController;
 | CUSTOMER
 |--------------------------------------------------------------------------
 */
-Route::redirect('/', '/table/1')->name('home');
+
+Route::get('/', function() {
+    return redirect('/table/1?scan=1');
+})->name('home');
 
 Route::get('/table/{table}', [MenuController::class, 'index'])->name('menu.index');
 
@@ -88,5 +91,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/admins/{id}', [AdminManagementController::class, 'update'])->name('admins.update');
         Route::delete('/admins/{id}', [AdminManagementController::class, 'destroy'])->name('admins.destroy');
         Route::post('/admins/{id}/reset-password', [AdminManagementController::class, 'resetPassword'])->name('admins.resetPassword');
+
+        
     });
 });

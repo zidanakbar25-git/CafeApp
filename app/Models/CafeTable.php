@@ -15,20 +15,16 @@ class CafeTable extends Model
         'qr_token',
     ];
 
-    /**
-     * Generate token unik baru untuk meja ini
-     */
-    public function regenerateToken(): void
+    public function getRouteKeyName(): string
     {
-        $this->qr_token = Str::uuid();
-        $this->save();
+        return 'table_id';
     }
 
     /**
-     * URL target untuk QR Code meja ini
+     * URL QR Code — tambah ?scan=1 supaya trigger generate session
      */
     public function getQrUrlAttribute(): string
     {
-        return url('/table/' . $this->table_number);
+        return url('/table/' . $this->table_number . '?scan=1');
     }
 }

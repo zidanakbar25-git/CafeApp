@@ -99,4 +99,7 @@ class TableController extends Controller
     {
         return view('admin.tables.print', compact('table'));
     }
+
+
+    
 }

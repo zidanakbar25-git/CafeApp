@@ -8,10 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('cafe_tables', function ($table) {
+        Schema::create('cafe_tables', function (Blueprint $table) {
             $table->increments('table_id');
             $table->string('table_number')->unique();
-            $table->string('qr_token')->unique();
+            $table->string('qr_token')->unique()->nullable();
             $table->timestamps();
         });
     }
