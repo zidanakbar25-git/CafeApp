@@ -102,7 +102,7 @@
 
 <div class="admin-layout">
 
-    @include('dashboard.layout.sidebar')
+    @include('admin.layout.sidebar')
 
     <div class="admin-content" style="margin-left:260px;">
 

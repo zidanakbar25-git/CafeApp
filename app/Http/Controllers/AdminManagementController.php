@@ -16,7 +16,7 @@ class AdminManagementController extends Controller
         $admins = Admin::where('role', 'cashier')
             ->orderBy('admin_id')
             ->get();
-        return view('admin.admins.index', compact('admins'));
+    return view('admin.manager.management.admins.index', compact('admins'));
     }
 
 
@@ -24,7 +24,7 @@ class AdminManagementController extends Controller
     public function create()
     {
         $this->authorizeSuper();
-        return view('admin.admins.create');
+        return view('admin.manager.management.admins.create');
     }
 
     // ── STORE ──────────────────────────────────────────
@@ -52,7 +52,7 @@ class AdminManagementController extends Controller
     {
         $this->authorizeSuper();
         $admin = Admin::findOrFail($id);
-        return view('admin.admins.edit', compact('admin'));
+        return view('admin.manager.management.admins.edit', compact('admin'));
     }
 
     // ── UPDATE ─────────────────────────────────────────
@@ -76,7 +76,7 @@ class AdminManagementController extends Controller
             'username' => $request->username,
         ]);
 
-        return redirect()->route('admin.admins.index')
+        return redirect()->route('admin.manager.management.admins.index')
             ->with('success', 'Akun kasir berhasil diperbarui.');
     }
 

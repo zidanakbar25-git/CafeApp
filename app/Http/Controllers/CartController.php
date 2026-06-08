@@ -35,7 +35,7 @@ class CartController extends Controller
 
         $totalItems = $order->orderDetails->sum('quantity');
 
-        return view('cart.index', compact('order', 'totalItems'));
+        return view('customer.cart.index', compact('order', 'totalItems'));
     }
 
     /**

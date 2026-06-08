@@ -21,7 +21,7 @@ class TableController extends Controller
 
         $tables = $query->get();
 
-        return view('admin.tables.index', compact('tables'));
+        return view('admin.manager.management.tables.index', compact('tables'));
     }
 
     /**
@@ -97,7 +97,7 @@ class TableController extends Controller
      */
     public function print(CafeTable $table)
     {
-        return view('admin.tables.print', compact('table'));
+        return view('admin.manager.management.tables.print', compact('table'));
     }
 
 

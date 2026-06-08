@@ -162,7 +162,7 @@
 <body>
 
 <div class="admin-layout">
-    @include('dashboard.layout.sidebar')
+    @include('admin.layout.sidebar')
 
     <div class="admin-content">
         <div class="topbar">

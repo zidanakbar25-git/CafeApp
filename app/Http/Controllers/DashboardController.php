@@ -51,7 +51,7 @@ class DashboardController extends Controller
         $countSelesai    = Order::where('status', 'selesai')->count();
         $countDibatalkan = Order::where('status', 'dibatalkan')->count();
 
-        return view('dashboard.index', compact(
+        return view('admin.cashier.dashboard.index', compact(
             'orders', 'tab',
             'countAktif', 'countSelesai', 'countDibatalkan'
         ));

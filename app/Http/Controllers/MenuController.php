@@ -38,7 +38,7 @@ class MenuController extends Controller
         if (!$sessionData || now()->timestamp > $sessionData['expires_at']) {
             // Session tidak ada atau expired
             session()->forget($sessionKey);
-            return view('customer.session-expired', ['tableNumber' => $table]);
+            return view('customer.tokensession.session-expired', ['tableNumber' => $table]);
         }
 
         // Session valid — refresh timer
@@ -75,6 +75,6 @@ class MenuController extends Controller
             ->where('menus.is_active', true)
             ->get();
 
-        return view('menu.index', compact('tableData', 'categories', 'subCategories', 'menus', 'order'));
+        return view('customer.menu.index', compact('tableData', 'categories', 'subCategories', 'menus', 'order'));
     }
 }

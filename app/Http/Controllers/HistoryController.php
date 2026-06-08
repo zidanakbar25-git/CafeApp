@@ -46,6 +46,6 @@ class HistoryController extends Controller
 
         $orders = $query->latest()->get();
 
-        return view('dashboard.history', compact('orders'));
+        return view('admin.history.History', compact('orders'));
     }
 }

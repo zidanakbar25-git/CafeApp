@@ -16,6 +16,6 @@ class PaymentCashController extends Controller
         $order = Order::with('orderDetails.menu')->findOrFail($order_id);
         $total = $order->orderDetails->sum('subtotal');
 
-        return view('payment.cash', compact('order', 'total'));
+        return view('customer.payment.cash.cash', compact('order', 'total'));
     }
 }

@@ -56,8 +56,7 @@ class AdminMenuController extends Controller
                 $csrfToken     = csrf_field();
                 $methodDelete  = method_field('DELETE');
 
-                // ✅ Kolom Tipe  → category_type  (Food / Drink)
-                // ✅ Kolom Kategori → sub_name    (nama sub kategori)
+          
                 $html .= "
                 <tr>
                     <td>
@@ -99,14 +98,14 @@ class AdminMenuController extends Controller
 
         $categories = DB::table('categories')->get();
 
-        return view('admin.menu.index', compact('menus', 'categories'));
+        return view('admin.manager.management.menu.index', compact('menus', 'categories'));
     }
 
     public function create()
     {
         $categories    = DB::table('categories')->get();
         $subCategories = DB::table('sub_categories')->get();
-        return view('admin.menu.create', compact('categories', 'subCategories'));
+        return view('admin.manager.management.menu.create', compact('categories', 'subCategories'));
     }
 
     public function store(Request $request)
@@ -152,7 +151,7 @@ class AdminMenuController extends Controller
         $categories    = DB::table('categories')->get();
         $subCategories = DB::table('sub_categories')->get();
 
-        return view('admin.menu.edit', compact('menu', 'categories', 'subCategories'));
+        return view('admin.manager.management.menu.edit', compact('menu', 'categories', 'subCategories'));
     }
 
     public function update(Request $request, $id)

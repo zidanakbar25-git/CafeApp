@@ -42,7 +42,7 @@
 
                 @if ($detail->menu && $detail->menu->image_url)
                     <img class="cart-item-img"
-                         src="{{ asset($detail->menu->image_url) }}"
+                         src="{{ asset('storage/' . $detail->menu->image_url) }}"
                          alt="{{ $detail->menu->name }}" loading="lazy">
                 @else
                     <div class="cart-item-img-placeholder">☕</div>
