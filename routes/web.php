@@ -73,6 +73,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/tables/{table}/clear-history', [TableController::class, 'clearHistory'])->name('tables.clearHistory');
         Route::delete('/tables/{table}', [TableController::class, 'destroy'])->name('tables.destroy');
         Route::get('/tables/{table}/print', [TableController::class, 'print'])->name('tables.print');
+        Route::post('/menu/{id}/toggle-active', [AdminMenuController::class, 'toggleActive'])->name('menu.toggleActive');
 
         // Manajemen Menu
         Route::get('/menu', [AdminMenuController::class, 'index'])->name('menu.index');
