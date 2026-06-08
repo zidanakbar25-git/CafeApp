@@ -438,7 +438,13 @@
                                                 <span style="color:#9ca3af;">{{ $order->created_at?->setTimezone('Asia/Jakarta')->format('H:i') }}</span>
                                             </td>
                                             <td style="font-weight:600; font-size:13px;">{{ $order->customer_name ?? '-' }}</td>
-                                            <td><span class="meja-badge">{{ $order->table_id }}</span></td>
+                                            <td>
+                                                @if($order->table_id)
+                                                <span class="meja-badge">{{ $order->cafeTable->table_number ?? $order->table_id }}</span>
+                                                @else
+                                                <span class="meja-badge" style="background:#fee2e2;color:#dc2626;">Meja dihapus</span>
+                                                @endif
+                                            </td>
                                             <td>
                                                 <div class="items-list">
                                                     @forelse($order->orderDetails as $detail)

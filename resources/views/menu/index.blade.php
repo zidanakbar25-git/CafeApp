@@ -173,18 +173,25 @@
      * Ambil total qty dari DB lalu update badge
      */
     async function refreshCartBadge() {
-        if (!currentOrderId) {
-            document.getElementById('cart-count').innerText = 0;
-            return;
-        }
-        try {
-            const res = await fetch(`/cart/count/${currentOrderId}`);
-            const data = await res.json();
-            document.getElementById('cart-count').innerText = data.count ?? 0;
-        } catch (e) {
-            console.error('Gagal refresh badge:', e);
-        }
+    if (!currentOrderId) {
+        document.getElementById('cart-count').style.display = 'none';
+        return;
     }
+    try {
+        const res = await fetch(`/cart/count/${currentOrderId}`);
+        const data = await res.json();
+        const count = data.count ?? 0;
+        const badge = document.getElementById('cart-count');
+        if (count > 0) {
+            badge.innerText = count;
+            badge.style.display = 'flex';
+        } else {
+            badge.style.display = 'none';
+        }
+    } catch (e) {
+        console.error('Gagal refresh badge:', e);
+    }
+}   
 
     /**
      * Kirim item ke DB via AJAX, lalu refresh badge

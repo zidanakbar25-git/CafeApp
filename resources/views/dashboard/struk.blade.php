@@ -154,14 +154,7 @@
         <span class="label">Metode Bayar</span>
         <span>{{ strtoupper($paymentMethod) }}</span>
     </div>
-    <div class="info-row">
-        <span class="label">Status</span>
-        <span>
-            <span class="status-badge badge-{{ $order->status }}">
-                {{ strtoupper($order->status) }}
-            </span>
-        </span>
-    </div>
+    
 
     <hr>
 
