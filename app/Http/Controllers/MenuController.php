@@ -23,7 +23,7 @@ class MenuController extends Controller
             session([
                 $sessionKey => [
                     'token'      => Str::random(32),
-                    'expires_at' => now()->addMinutes(30)->timestamp,
+                    'expires_at' => now()->addSeconds(10)->timestamp,
                 ]
             ]);
             
@@ -41,13 +41,7 @@ class MenuController extends Controller
             return view('customer.tokensession.session-expired', ['tableNumber' => $table]);
         }
 
-        // Session valid — refresh timer
-        session([
-            $sessionKey => [
-                'token'      => $sessionData['token'],
-                'expires_at' => now()->addMinutes(30)->timestamp,
-            ]
-        ]);
+       
 
         // Cari draft
         $drafts = Order::where('table_id', $tableData->table_id)
@@ -75,6 +69,7 @@ class MenuController extends Controller
             ->where('menus.is_active', true)
             ->get();
 
-        return view('customer.menu.index', compact('tableData', 'categories', 'subCategories', 'menus', 'order'));
+        
+        return view('customer.menu.index', compact('tableData', 'categories', 'subCategories', 'menus', 'order', 'sessionData'));
     }
 }

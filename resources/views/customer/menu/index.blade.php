@@ -112,150 +112,173 @@
     </div>
 
     <script>
-    // ── Filter Category & SubCategory ──────────────────────────────────────────
-
-    let activeCategory = null;
-    let activeSub = null;
-
-    const categoryMap = {
-        "Food": ["Main Course", "Dessert"],
-        "Drink": ["Coffee", "Non-Coffee"]
-    };
-
-    function filterMenu() {
-        document.querySelectorAll('.menu-item').forEach(item => {
-            let show = true;
-            if (activeCategory && item.dataset.category !== activeCategory) show = false;
-            if (activeSub && item.dataset.sub !== activeSub) show = false;
-            item.style.display = show ? 'block' : 'none';
-        });
-    }
-
-    function filterSubCategory() {
-        document.querySelectorAll('.sub-btn').forEach(btn => {
-            const subName = btn.dataset.sub;
-            btn.style.display = (!activeCategory || categoryMap[activeCategory]?.includes(subName)) ?
-                'inline-block' : 'none';
-        });
-    }
-
-    document.querySelectorAll('.category-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            activeCategory = this.dataset.category;
-            activeSub = null;
-            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove(
-                'category-active'));
-            this.classList.add('category-active');
-            filterSubCategory();
-            filterMenu();
-        });
-    });
-
-    document.querySelectorAll('.sub-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            activeSub = this.dataset.sub;
-            document.querySelectorAll('.sub-btn').forEach(b => b.classList.remove('sub-active'));
-            this.classList.add('sub-active');
-            filterMenu();
-        });
-    });
-
-    document.querySelector('.category-btn').click();
+       const SESSION_EXPIRES_AT = {{ $sessionData['expires_at'] }};
 
 
-    // ── Cart (AJAX ke database) ────────────────────────────────────────────────
 
-    const CSRF_TOKEN = "{{ csrf_token() }}";
-    const TABLE_ID = {{ $tableData->table_id }};
-    let currentOrderId = {{ $order ? $order->order_id : 'null' }};
+        // ── Filter Category & SubCategory ──────────────────────────────────────────
 
-    /**
-     * Ambil total qty dari DB lalu update badge
-     */
-    async function refreshCartBadge() {
-    if (!currentOrderId) {
-        document.getElementById('cart-count').style.display = 'none';
-        return;
-    }
-    try {
-        const res = await fetch(`/cart/count/${currentOrderId}`);
-        const data = await res.json();
-        const count = data.count ?? 0;
-        const badge = document.getElementById('cart-count');
-        if (count > 0) {
-            badge.innerText = count;
-            badge.style.display = 'flex';
-        } else {
-            badge.style.display = 'none';
-        }
-    } catch (e) {
-        console.error('Gagal refresh badge:', e);
-    }
-}   
+        let activeCategory = null;
+        let activeSub = null;
 
-    /**
-     * Kirim item ke DB via AJAX, lalu refresh badge
-     */
-    async function addToCartAjax(menuId, btnEl) {
-        btnEl.disabled = true;
-        btnEl.innerText = '...';
+        const categoryMap = {
+            "Food": ["Main Course", "Dessert"],
+            "Drink": ["Coffee", "Non-Coffee"]
+        };
 
-        try {
-            const res = await fetch('/cart/add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': CSRF_TOKEN,
-                },
-                body: JSON.stringify({
-                    menu_id: menuId,
-                    table_id: TABLE_ID
-                }),
+        function filterMenu() {
+            document.querySelectorAll('.menu-item').forEach(item => {
+                let show = true;
+                if (activeCategory && item.dataset.category !== activeCategory) show = false;
+                if (activeSub && item.dataset.sub !== activeSub) show = false;
+                item.style.display = show ? 'block' : 'none';
             });
-
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-            const data = await res.json();
-
-            // Simpan order_id yang baru dibuat (kalau sebelumnya null)
-            if (data.order_id) currentOrderId = data.order_id;
-
-            await refreshCartBadge();
-
-            btnEl.innerText = '✓';
-            setTimeout(() => {
-                btnEl.innerText = 'Add';
-                btnEl.disabled = false;
-            }, 800);
-
-        } catch (e) {
-            console.error('Gagal tambah item:', e);
-            btnEl.innerText = '!';
-            setTimeout(() => {
-                btnEl.innerText = 'Add';
-                btnEl.disabled = false;
-            }, 1000);
         }
-    }
 
-    document.querySelectorAll('.add-to-cart').forEach(btn => {
-        btn.addEventListener('click', function() {
-            addToCartAjax(this.dataset.id, this);
+        function filterSubCategory() {
+            document.querySelectorAll('.sub-btn').forEach(btn => {
+                const subName = btn.dataset.sub;
+                btn.style.display = (!activeCategory || categoryMap[activeCategory]?.includes(subName)) ?
+                    'inline-block' : 'none';
+            });
+        }
+
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                activeCategory = this.dataset.category;
+                activeSub = null;
+                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove(
+                    'category-active'));
+                this.classList.add('category-active');
+                filterSubCategory();
+                filterMenu();
+            });
         });
-    });
 
-    function goToCart() {
-        if (!currentOrderId) {
-            alert('Keranjang masih kosong, tambahkan item dulu.');
+        document.querySelectorAll('.sub-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                activeSub = this.dataset.sub;
+                document.querySelectorAll('.sub-btn').forEach(b => b.classList.remove('sub-active'));
+                this.classList.add('sub-active');
+                filterMenu();
+            });
+        });
+
+        document.querySelector('.category-btn').click();
+
+
+        // ── Cart (AJAX ke database) ────────────────────────────────────────────────
+
+        const CSRF_TOKEN = "{{ csrf_token() }}";
+        const TABLE_ID = {{ $tableData->table_id }};
+
+        let currentOrderId = {{ $order ? $order->order_id : 'null' }};
+
+        /**
+         * Ambil total qty dari DB lalu update badge
+         */
+        async function refreshCartBadge() {
+            if (!currentOrderId) {
+                document.getElementById('cart-count').style.display = 'none';
+                return;
+            }
+            try {
+                const res = await fetch(`/cart/count/${currentOrderId}`);
+                const data = await res.json();
+                const count = data.count ?? 0;
+                const badge = document.getElementById('cart-count');
+                if (count > 0) {
+                    badge.innerText = count;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            } catch (e) {
+                console.error('Gagal refresh badge:', e);
+            }
+        }
+
+        /**
+         * Kirim item ke DB via AJAX, lalu refresh badge
+         */
+        async function addToCartAjax(menuId, btnEl) {
+            if (Date.now() / 1000 > SESSION_EXPIRES_AT) {
+                window.location.href = '/table/{{ $tableData->table_number }}';
+                return;
+            }
+
+            btnEl.disabled = true;
+            btnEl.innerText = '...';
+
+            try {
+                const res = await fetch('/cart/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': CSRF_TOKEN,
+                    },
+                    body: JSON.stringify({
+                        menu_id: menuId,
+                        table_id: TABLE_ID
+                    }),
+                });
+
+                if (res.status === 401) {
+                    const data = await res.json();
+                    if (data.message === 'session_expired') {
+                        alert('Sesi kamu sudah habis. Silakan scan QR ulang.');
+                        window.location.href = '/table/{{ $tableData->table_number }}';
+                        return;
+                    }
+                }
+
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+                const data = await res.json();
+
+                // Simpan order_id yang baru dibuat (kalau sebelumnya null)
+                if (data.order_id) currentOrderId = data.order_id;
+
+                await refreshCartBadge();
+
+                btnEl.innerText = '✓';
+                setTimeout(() => {
+                    btnEl.innerText = 'Add';
+                    btnEl.disabled = false;
+                }, 800);
+
+            } catch (e) {
+                console.error('Gagal tambah item:', e);
+                btnEl.innerText = '!';
+                setTimeout(() => {
+                    btnEl.innerText = 'Add';
+                    btnEl.disabled = false;
+                }, 1000);
+            }
+        }
+
+        document.querySelectorAll('.add-to-cart').forEach(btn => {
+            btn.addEventListener('click', function() {
+                addToCartAjax(this.dataset.id, this);
+            });
+        });
+
+        function goToCart() {
+            if (Date.now() / 1000 > SESSION_EXPIRES_AT) {
+            window.location.href = '/table/{{ $tableData->table_number }}';
             return;
         }
-        window.location.href = `/cart/${currentOrderId}`;
-    }
 
-    // Init badge saat halaman dibuka
-    refreshCartBadge();
 
-    
+            if (!currentOrderId) {
+                alert('Keranjang masih kosong, tambahkan item dulu.');
+                return;
+            }
+            window.location.href = `/cart/${currentOrderId}`;
+        }
+
+        // Init badge saat halaman dibuka
+        refreshCartBadge();
     </script>
 
 </body>

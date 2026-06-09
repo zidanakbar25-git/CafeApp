@@ -125,17 +125,7 @@ class CartController extends Controller
 
         $menu = \App\Models\Menu::findOrFail($request->menu_id);
 
-        // Refresh session timer
-        $sessionKey  = 'table_session_' . $request->table_id;
-        $sessionData = session($sessionKey);
-        if ($sessionData) {
-            session([
-                $sessionKey => [
-                    'token'      => $sessionData['token'],
-                    'expires_at' => now()->addMinutes(30)->timestamp,
-                ]
-            ]);
-        }
+       
 
         // Cari draft yang ada, kalau tidak ada baru create
         $order = Order::where('table_id', $request->table_id)

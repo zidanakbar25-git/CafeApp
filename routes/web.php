@@ -19,7 +19,7 @@ use App\Http\Controllers\AdminMenuController;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', function() {
+Route::get('/', function () {
     return redirect('/table/1?scan=1');
 })->name('home');
 
@@ -93,6 +93,12 @@ Route::middleware('auth')->group(function () {
         Route::delete('/admins/{id}', [AdminManagementController::class, 'destroy'])->name('admins.destroy');
         Route::post('/admins/{id}/reset-password', [AdminManagementController::class, 'resetPassword'])->name('admins.resetPassword');
 
-        
+        //token
+        Route::post('/cart/add', [CartController::class, 'addItem'])
+            ->name('cart.add')
+            ->middleware('table.session');
+
+        Route::post('/cart/update-qty-ajax', [CartController::class, 'updateQtyAjax'])->middleware('table.session');
+        Route::post('/cart/checkout/{order_id}', [CartController::class, 'checkout'])->middleware('table.session');
     });
 });

@@ -212,6 +212,21 @@ class AdminMenuController extends Controller
 
         return response()->json($subs);
     }
+    public function toggleActive($id)
+{
+    $menu = DB::table('menus')->where('menu_id', $id)->first();
+    abort_if(!$menu, 404);
+
+    DB::table('menus')->where('menu_id', $id)->update([
+        'is_active'  => !$menu->is_active,
+        'updated_at' => now(),
+    ]);
+
+    $status = $menu->is_active ? 'dinonaktifkan' : 'diaktifkan';
+
+    return redirect()->route('admin.menu.index')
+        ->with('success', 'Menu ' . $menu->name . ' berhasil ' . $status . '.');
+}
 
     
 
