@@ -280,7 +280,7 @@
                                         </div>
                                         <div class="col-4">
                                             <div class="info-label">Meja</div>
-                                            <div class="info-value">#{{ $order->table_id }}</div>
+                                            <div class="info-value">{{ $order->cafeTable->table_number ?? '-' }}</div>
                                         </div>
                                         <div class="col-4">
                                             <div class="info-label">Bayar</div>

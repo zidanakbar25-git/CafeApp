@@ -60,4 +60,9 @@ class Order extends Model
     {
         return 'Rp ' . number_format($this->total_amount, 0, ',', '.');
     }
+
+    public function cafeTable()
+{
+    return $this->belongsTo(\App\Models\CafeTable::class, 'table_id', 'table_id');
+}
 }

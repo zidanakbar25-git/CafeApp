@@ -479,19 +479,7 @@
                                             <i class="fa-solid fa-pencil text-xs"></i>
                                         </a>
 
-                                        {{-- Form hapus — submit dicegat JS, pakai modal custom --}}
-                                        <form id="delete-form-{{ $menu->menu_id }}"
-                                            action="{{ route('admin.menu.destroy', $menu->menu_id) }}"
-                                            method="POST">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="button"
-                                                class="action-btn danger-btn"
-                                                title="Hapus Menu"
-                                                onclick="showDeleteModal({{ $menu->menu_id }}, '{{ addslashes($menu->name) }}')">
-                                                <i class="fa-solid fa-trash-can text-xs"></i>
-                                            </button>
-                                        </form>
+                                        
                                     </div>
                                 </td>
                             </tr>

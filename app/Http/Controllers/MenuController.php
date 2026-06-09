@@ -19,29 +19,29 @@ class MenuController extends Controller
 
         // Cek apakah customer scan QR (ada query ?scan=1)
         if ($request->query('scan')) {
-            // Generate session baru
+            $this->clearDraftOrder($tableData->table_id);
             session([
                 $sessionKey => [
                     'token'      => Str::random(32),
-                    'expires_at' => now()->addSeconds(10)->timestamp,
+                    'expires_at' => now()->addMinutes(30)->timestamp,
                 ]
             ]);
-            
+
             return redirect()->route('menu.index', ['table' => $table]);
         }
 
         // Cek session
         $sessionData = session($sessionKey);
 
-        
+
 
         if (!$sessionData || now()->timestamp > $sessionData['expires_at']) {
-            // Session tidak ada atau expired
             session()->forget($sessionKey);
+            $this->clearDraftOrder($tableData->table_id);
             return view('customer.tokensession.session-expired', ['tableNumber' => $table]);
         }
 
-       
+
 
         // Cari draft
         $drafts = Order::where('table_id', $tableData->table_id)
@@ -69,7 +69,19 @@ class MenuController extends Controller
             ->where('menus.is_active', true)
             ->get();
 
-        
+
         return view('customer.menu.index', compact('tableData', 'categories', 'subCategories', 'menus', 'order', 'sessionData'));
+    }
+
+    private function clearDraftOrder(int $tableId): void
+    {
+        $drafts = \App\Models\Order::where('table_id', $tableId)
+            ->where('status', 'draft')
+            ->get();
+
+        foreach ($drafts as $draft) {
+            $draft->orderDetails()->delete();
+            $draft->delete();
+        }
     }
 }

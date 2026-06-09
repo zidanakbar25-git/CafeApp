@@ -114,7 +114,8 @@ class OrderController extends Controller
 
         $payment = $order->payments()->latest()->first();
         $paymentMethod = $payment?->payment_method ?? $order->payment_method ?? '-';
+        $kasir = auth()->user()->username; 
 
-        return view('admin.cashier.dashboard.struk', compact('order', 'payment', 'paymentMethod'));
+        return view('admin.cashier.dashboard.struk', compact('order', 'payment', 'paymentMethod', 'kasir'));
     }
 }

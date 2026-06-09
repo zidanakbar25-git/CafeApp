@@ -24,6 +24,12 @@ class ValidateTableSession
 
         if (!$sessionData || now()->timestamp > $sessionData['expires_at']) {
             session()->forget($sessionKey);
+            \App\Models\Order::where('table_id', $tableId)
+                ->where('status', 'draft')
+                ->each(function ($order) {
+                    $order->orderDetails()->delete();
+                    $order->delete();
+                });
             return response()->json([
                 'success' => false,
                 'message' => 'session_expired',
