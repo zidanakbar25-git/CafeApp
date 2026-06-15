@@ -16,9 +16,8 @@ class AdminManagementController extends Controller
         $admins = Admin::where('role', 'cashier')
             ->orderBy('admin_id')
             ->get();
-    return view('admin.manager.management.admins.index', compact('admins'));
+        return view('admin.manager.management.admins.index', compact('admins'));
     }
-
 
     // ── CREATE ─────────────────────────────────────────
     public function create()
@@ -56,13 +55,6 @@ class AdminManagementController extends Controller
     }
 
     // ── UPDATE ─────────────────────────────────────────
-    private function authorizeSuper()
-    {
-        if (auth()->user()->role !== 'manager') {
-            abort(403);
-        }
-    }
-
     public function update(Request $request, $id)
     {
         $this->authorizeSuper();
@@ -70,16 +62,22 @@ class AdminManagementController extends Controller
 
         $request->validate([
             'username' => 'required|string|max:100|unique:admins,username,' . $id . ',admin_id',
+            'password' => 'nullable|string|min:6|confirmed',
         ]);
 
-        $admin->update([
-            'username' => $request->username,
-        ]);
+        $data = ['username' => $request->username];
 
-        return redirect()->route('admin.manager.management.admins.index')
+        if ($request->filled('password')) {
+            $data['password'] = Hash::make($request->password);
+        }
+
+        $admin->update($data);
+
+        return redirect()->route('admin.admins.index')
             ->with('success', 'Akun kasir berhasil diperbarui.');
     }
 
+    // ── DESTROY ────────────────────────────────────────
     public function destroy($id)
     {
         $this->authorizeSuper();
@@ -107,5 +105,13 @@ class AdminManagementController extends Controller
             'reset_name'    => $admin->name ?? $admin->username,
             'new_password'  => $newPassword,
         ]);
+    }
+
+    // ── HELPER ─────────────────────────────────────────
+    private function authorizeSuper()
+    {
+        if (auth()->user()->role !== 'manager') {
+            abort(403);
+        }
     }
 }

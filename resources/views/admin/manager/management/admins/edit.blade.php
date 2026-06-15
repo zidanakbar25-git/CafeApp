@@ -132,6 +132,15 @@
             color: #9ca3af;
             margin-top: 4px;
         }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            margin-bottom: 14px;
+        }
     </style>
 </head>
 
@@ -171,13 +180,12 @@
                 </div>
                 @endif
 
-                @php $isSelf = auth()->user()->admin_id == $admin->admin_id; @endphp
-
                 <form method="POST" action="{{ route('admin.admins.update', $admin->admin_id) }}">
                     @csrf
                     @method('PUT')
 
-                    
+                    {{-- Informasi Akun --}}
+                    <div class="section-title">Informasi Akun</div>
 
                     <div class="mb-3">
                         <label class="form-label">Username</label>
@@ -185,28 +193,37 @@
                             value="{{ old('username', $admin->username) }}" required>
                         @error('username')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
-
-
-
-
+                
+                
+                    <div class="mb-3">
+                        <label class="form-label">Password Baru</label>
+                        <input type="password" name="password"
+                            class="form-control @error('password') is-invalid @enderror"
+                            placeholder="Minimal 6 karakter">
+                        @error('password')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Role</label>
-                        <input type="text" class="form-control" value="{{ $admin->role === 'manager' ? 'Manager' : 'Kasir' }}" disabled>
+                        <label class="form-label">Konfirmasi Password Baru</label>
+                        <input type="password" name="password_confirmation"
+                            class="form-control"
+                            placeholder="Ulangi password baru">
                     </div>
+
+                    <hr class="divider">
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn-simpan">Simpan Perubahan</button>
+                        <a href="{{ route('admin.admins.index') }}" class="btn-batal">Batal</a>
+                    </div>
+
+                </form>
+
             </div>
 
-            <hr class="divider">
-
-            <div class="d-flex gap-2">
-                <button type="submit" class="btn-simpan">Simpan Perubahan</button>
-                <a href="{{ route('admin.admins.index') }}" class="btn-batal">Batal</a>
-            </div>
-            </form>
         </div>
+    </div>
 
-    </div>
-    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

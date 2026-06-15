@@ -44,57 +44,61 @@ class AdminMenuController extends Controller
             return $item;
         });
 
-        if ($request->ajax() || $request->wantsJson()) {
-            $html = '';
-            foreach ($menus as $menu) {
-                $assetStorage  = asset('storage/' . $menu->image_url);
-                $assetFallback = asset($menu->image_url);
-                $formattedPrice = number_format($menu->price, 0, ',', '.');
-                $badgeClass    = $menu->category_type === 'Drink' ? 'bg-drink' : 'bg-food';
-                $routeEdit     = route('admin.menu.edit', $menu->menu_id);
-                $routeDestroy  = route('admin.menu.destroy', $menu->menu_id);
-                $csrfToken     = csrf_field();
-                $methodDelete  = method_field('DELETE');
+       if ($request->ajax() || $request->wantsJson()) {
+    $html = '';
+    foreach ($menus as $menu) {
+        $assetStorage   = asset('storage/' . $menu->image_url);
+        $assetFallback  = asset($menu->image_url);
+        $formattedPrice = number_format($menu->price, 0, ',', '.');
+        $badgeClass     = $menu->category_type === 'Drink' ? 'bg-drink' : 'bg-food';
+        $routeEdit      = route('admin.menu.edit', $menu->menu_id);
+        $routeToggle    = route('admin.menu.toggleActive', $menu->menu_id);
+        $csrfToken      = csrf_field();
+        $toggleOn       = $menu->is_active ? 'on' : '';
+        $toggleTitle    = $menu->is_active ? 'Nonaktifkan' : 'Aktifkan';
+        $confirmMsg     = $menu->is_active ? 'Nonaktifkan' : 'Aktifkan';
 
-          
-                $html .= "
-                <tr>
-                    <td>
-                        <div class='d-flex align-items-center gap-3'>
-                            <img src='{$assetStorage}' onerror=\"this.src='{$assetFallback}'; this.onerror=null;\" class='rounded shadow-sm' style='width:42px; height:42px; object-fit: cover;' alt=''>
-                            <span class='menu-name'>{$menu->name}</span>
-                        </div>
-                    </td>
-                    <td class='text-secondary text-truncate' style='max-width: 200px;'>" . ($menu->description ?? '-') . "</td>
-                    <td>
-                        <span class='badge-type {$badgeClass}'>
-                            {$menu->category_type}
-                        </span>
-                    </td>
-                    <td class='text-muted'>{$menu->sub_name}</td>
-                    <td style='text-align:right;' class='fw-bold text-dark'>Rp {$formattedPrice}</td>
-                    <td>
-                        <div class='d-flex gap-2 justify-content-center'>
-                            <a href='{$routeEdit}' class='action-btn' title='Edit Menu'>
-                                <i class='fa-solid fa-pencil text-xs'></i>
-                            </a>
-                            <form id='delete-form-{$menu->menu_id}' action='{$routeDestroy}' method='POST' onsubmit=\"return confirm('Apakah Anda yakin ingin menghapus menu {$menu->name}?')\">
-                                {$csrfToken}
-                                {$methodDelete}
-                                <button type='submit' class='action-btn danger-btn' title='Hapus Menu'>
-                                    <i class='fa-solid fa-trash-can text-xs'></i>
-                                </button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>";
-            }
+        $html .= "
+        <tr>
+            <td>
+                <div class='d-flex align-items-center gap-3'>
+                    <img src='{$assetStorage}' onerror=\"this.src='{$assetFallback}'; this.onerror=null;\" class='rounded shadow-sm' style='width:42px; height:42px; object-fit: cover;' alt=''>
+                    <span class='menu-name'>{$menu->name}</span>
+                </div>
+            </td>
+            <td class='text-secondary text-truncate' style='max-width: 200px;'>" . ($menu->description ?? '-') . "</td>
+            <td>
+                <span class='badge-type {$badgeClass}'>
+                    {$menu->category_type}
+                </span>
+            </td>
+            <td class='text-muted'>{$menu->sub_name}</td>
+            <td style='text-align:right;' class='fw-bold text-dark'>Rp {$formattedPrice}</td>
+            <td style='text-align:center;'>
+                <form action='{$routeToggle}' method='POST'>
+                    {$csrfToken}
+                    <button type='submit' class='toggle-switch {$toggleOn}'
+                        title='{$toggleTitle} menu'
+                        onclick=\"return confirm('{$confirmMsg} menu {$menu->name}?')\">
+                        <span class='toggle-thumb'></span>
+                    </button>
+                </form>
+            </td>
+            <td>
+                <div class='d-flex gap-2 justify-content-center'>
+                    <a href='{$routeEdit}' class='action-btn' title='Edit Menu'>
+                        <i class='fa-solid fa-pencil text-xs'></i>
+                    </a>
+                </div>
+            </td>
+        </tr>";
+    }
 
-            return response()->json([
-                'html'  => $html,
-                'count' => $menus->count()
-            ]);
-        }
+    return response()->json([
+        'html'  => $html,
+        'count' => $menus->count()
+    ]);
+}
 
         $categories = DB::table('categories')->get();
 
