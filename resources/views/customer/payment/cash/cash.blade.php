@@ -162,17 +162,7 @@
 
         <div class="checkout-bar no-print">
 
-    <form action="{{ route('payment.finalize', $order->order_id) }}" method="POST">
-
-        @csrf
-
-        <input type="hidden" name="payment_method" value="cash">
-
-        <button type="submit" class="checkout-btn">
-            Selesaikan Pembayaran
-        </button>
-
-    </form>
+    
 
 </div>
 

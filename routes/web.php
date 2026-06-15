@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\PaymentCashController;
 use App\Http\Controllers\AdminLoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OrderController;
@@ -34,7 +33,7 @@ Route::get('/cart/count/{order_id}', [CartController::class, 'getCount'])->name(
 
 Route::get('/payment/{order_id}', [PaymentController::class, 'index'])->name('payment.index');
 Route::get('/payment/qris/{order_id}', [PaymentController::class, 'qris'])->name('payment.qris');
-Route::get('/payment/cash/{order_id}', [PaymentCashController::class, 'show'])->name('payment.cash.show');
+Route::get('/payment/cash/{order_id}', [PaymentController::class, 'cash'])->name('payment.cash.show');
 Route::post('/payment/process/{order_id}', [PaymentController::class, 'process'])->name('payment.process');
 Route::get('/payment/cc/{order_id}', [PaymentController::class, 'cc'])->name('payment.cc');
 Route::get('/payment/success/{order_id}', [PaymentController::class, 'success'])->name('payment.success');

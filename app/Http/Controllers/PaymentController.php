@@ -27,6 +27,25 @@ class PaymentController extends Controller
     {
         $order = Order::with('orderDetails.menu')->findOrFail($id);
         $total = $order->orderDetails->sum('subtotal');
+
+        if (!in_array($order->status, ['draft', 'pending_cash'])) {
+        return redirect()->route('payment.success', $id);
+    }
+
+        if ($order->status === 'draft') {
+            $order->status         = 'pending_cash';
+            $order->payment_method = 'cash';
+            $order->paid_at        = now(); // ← tambah ini
+            $order->save();
+
+            Payment::create([
+                'order_id'       => $order->order_id,
+                'admin_id'       => null,
+                'payment_method' => 'cash',
+                'payment_status' => 'pending',
+                'paid_at'        => null,
+            ]);
+        }
         return view('customer.payment.cash.cash', compact('order', 'total'));
     }
 
