@@ -11,6 +11,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\TableController;
+use App\Http\Controllers\AdminMenuController;
 
 /*
 |--------------------------------------------------------------------------
@@ -94,8 +95,10 @@ Route::get('/login', [AdminLoginController::class, 'showLogin'])
 
 Route::post('/login', [AdminLoginController::class, 'login']);
 
-Route::get('/logout', [AdminLoginController::class, 'logout'])
+// DIUBAH KE POST AGAR WORK DENGAN TOMBOL LOGOUT SIDEBAR & TIDAK BENTROK TABEL
+Route::post('/logout', [AdminLoginController::class, 'logout'])
     ->name('logout');
+
 
 /*
 |--------------------------------------------------------------------------
@@ -112,7 +115,7 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     | ORDER — Kasir & Manager bisa update status
     |--------------------------------------------------------------------------
-    */
+    |*/
     Route::patch('/admin/orders/{id}/status', [OrderController::class, 'updateStatus'])
         ->name('admin.orders.updateStatus');
 
@@ -124,43 +127,46 @@ Route::middleware('auth')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | HALAMAN MANAGER ONLY
+    | RIWAYAT — Manager & Kasir bisa lihat
     |--------------------------------------------------------------------------
-    */
+    |*/
+    Route::get('/admin/orders/history', [HistoryController::class, 'index'])
+        ->name('admin.orders.history');
+
+    /*
+    |--------------------------------------------------------------------------
+    | HALAMAN MANAGER ONLY (Proteksi Role: Manager)
+    |--------------------------------------------------------------------------
+    |*/
     Route::middleware('role:manager')->group(function () {
 
-        Route::get('/admin/tables', function () {
-            return 'Tables Page';
-        })->name('admin.tables.index');
-
-        Route::get('/admin/menu', function () {
-            return 'Menu Page';
-        })->name('admin.menu.index');
-
+        // Manajemen Admin Utama
         Route::get('/admin/admins', function () {
             return 'Admins Page';
         })->name('admin.admins.index');
 
+        // Admin - Manajemen Meja (Menggunakan Controller)
+        Route::prefix('admin')->name('admin.')->group(function () {
+            Route::get('/tables', [TableController::class, 'index'])->name('tables.index');
+            Route::post('/tables', [TableController::class, 'store'])->name('tables.store');
+            Route::post('/tables/{table}/clear-history', [TableController::class, 'clearHistory'])->name('tables.clearHistory');
+            Route::delete('/tables/{table}', [TableController::class, 'destroy'])->name('tables.destroy');
+            Route::get('/tables/{table}/print', [TableController::class, 'print'])->name('tables.print');
+        });
+
+        // Admin - Manajemen Menu (Menggunakan Controller)
+        Route::prefix('admin')->name('admin.')->group(function () {
+            Route::get('/menu', [AdminMenuController::class, 'index'])->name('menu.index');
+            Route::get('/menu/create', [AdminMenuController::class, 'create'])->name('menu.create');
+            Route::post('/menu', [AdminMenuController::class, 'store'])->name('menu.store');
+            Route::get('/menu/{id}/edit', [AdminMenuController::class, 'edit'])->name('menu.edit');
+            Route::put('/menu/{id}', [AdminMenuController::class, 'update'])->name('menu.update');
+            Route::delete('/menu/{id}', [AdminMenuController::class, 'destroy'])->name('menu.destroy');
+            
+            // AJAX penunjang sub kategori
+            Route::get('/get-subcategories/{categoryId}', [AdminMenuController::class, 'getSubCategories'])->name('menu.getSubCategories');
+        });
+
     });
-
-    /*
-    |--------------------------------------------------------------------------
-    | RIWAYAT — Manager & Kasir bisa lihat
-    |--------------------------------------------------------------------------
-    */
-    Route::get('/admin/orders/history', [HistoryController::class, 'index'])->name('admin.orders.history');
-
-
-    // Admin - Manajemen Meja
-Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () {
-    // ... route admin lainnya ...
-
-    Route::get('/tables', [TableController::class, 'index'])->name('tables.index');
-    Route::post('/tables', [TableController::class, 'store'])->name('tables.store');
-    Route::post('/tables/{table}/clear-history', [TableController::class, 'clearHistory'])->name('tables.clearHistory');
-    Route::delete('/tables/{table}', [TableController::class, 'destroy'])->name('tables.destroy');
-    Route::get('/tables/{table}/print', [TableController::class, 'print'])->name('tables.print');
-});
-
     
 });

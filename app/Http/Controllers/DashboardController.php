@@ -4,18 +4,26 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function index(Request $request)
     {
+        $user = Auth::user();
+
+        // Manager diarahkan ke halaman manajemen meja sebagai "home" mereka
+        // (karena dashboard pesanan adalah domain kasir)
+        if ($user->role === 'manager') {
+            return redirect()->route('admin.tables.index');
+        }
+
+        // ── Kasir / role lain: tampilkan dashboard pesanan ──
         $tab = $request->get('tab', 'aktif');
 
         $query = Order::with(['orderDetails.menu', 'payments'])->latest();
 
         if ($tab === 'aktif') {
-            // Tampilkan: pending_cash (tunai belum dikonfirmasi) + menunggu + diproses
-            // EXCLUDE: draft (order kosong meja) dan order tanpa payment
             $query->whereIn('status', ['pending_cash', 'menunggu', 'diproses'])
                   ->whereNotNull('payment_method')
                   ->whereNotNull('paid_at');
@@ -35,7 +43,6 @@ class DashboardController extends Controller
 
         $orders = $query->get();
 
-        // Badge counts
         $countAktif = Order::whereIn('status', ['pending_cash', 'menunggu', 'diproses'])
                            ->whereNotNull('payment_method')
                            ->whereNotNull('paid_at')

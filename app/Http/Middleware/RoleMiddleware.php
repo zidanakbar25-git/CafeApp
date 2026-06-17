@@ -14,8 +14,8 @@ class RoleMiddleware
             return redirect('/login');
         }
 
-        // Support multiple role: middleware('role:manager,cashier')
-        $allowedRoles = explode(',', $role);
+        // Support multiple role: middleware('role:manager,kasir')
+        $allowedRoles = array_map('trim', explode(',', $role));
 
         if (!in_array(Auth::user()->role, $allowedRoles)) {
             abort(403, 'Anda tidak memiliki izin untuk mengakses halaman ini.');
