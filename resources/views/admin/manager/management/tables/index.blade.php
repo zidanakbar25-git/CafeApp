@@ -7,6 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Manajemen Meja — Cozy Cafe</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body {
             margin: 0;
@@ -382,7 +383,7 @@
                             </td>
                             <td style="text-align:center;">
                                 <div class="qr-preview">
-                                    {!! QrCode::size(60)->generate($table->qr_url) !!}
+                                    {!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(60)->generate($table->qr_url) !!}
                                 </div>
                             </td>
                             <td style="text-align:right; padding-right:24px;">
@@ -404,7 +405,7 @@
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="action-btn danger" title="Hapus Meja"
-                                            onclick="return confirm('Hapus meja {{ $table->table_number }}? Riwayat pesanan tetap tersimpan.')">
+                                            onclick="event.preventDefault(); Swal.fire({title: 'Hapus meja {{ $table->table_number }}?', text: 'Riwayat pesanan tetap tersimpan.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', confirmButtonText: 'Ya, Hapus', cancelButtonText: 'Batal'}).then((result) => { if (result.isConfirmed) { this.closest('form').submit(); } })">
                                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2">
                                                 <polyline points="3 6 5 6 21 6" />
                                                 <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />

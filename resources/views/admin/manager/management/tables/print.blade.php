@@ -44,7 +44,7 @@
     <div class="card">
         <h2>Meja {{ $table->table_number }}</h2>
         <p>Scan untuk melihat menu</p>
-        {!! QrCode::size(200)->generate($table->qr_url) !!}
+        {!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(200)->generate($table->qr_url) !!}
         <p style="margin-top:12px; font-size:0.75rem; color:#999;">{{ $table->qr_url }}</p>
     </div>
     <script>

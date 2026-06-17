@@ -8,6 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     @vite('resources/css/menu.css')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -226,8 +227,14 @@
                 if (res.status === 401) {
                     const data = await res.json();
                     if (data.message === 'session_expired') {
-                        alert('Sesi kamu sudah habis. Silakan scan QR ulang.');
-                        window.location.href = '/table/{{ $tableData->table_number }}';
+                        Swal.fire({
+                            title: 'Sesi Habis!',
+                            text: 'Sesi kamu sudah habis. Silakan scan QR ulang.',
+                            icon: 'warning',
+                            confirmButtonColor: '#451a03'
+                        }).then(() => {
+                            window.location.href = '/table/{{ $tableData->table_number }}';
+                        });
                         return;
                     }
                 }
@@ -271,7 +278,12 @@
 
 
             if (!currentOrderId) {
-                alert('Keranjang masih kosong, tambahkan item dulu.');
+                Swal.fire({
+                    title: 'Kosong!',
+                    text: 'Keranjang masih kosong, tambahkan item dulu.',
+                    icon: 'info',
+                    confirmButtonColor: '#451a03'
+                });
                 return;
             }
             window.location.href = `/cart/${currentOrderId}`;

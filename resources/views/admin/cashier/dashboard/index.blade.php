@@ -6,6 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Dashboard — Cozy Cafe</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body { margin: 0; background: #f5f7fb; font-family: 'Segoe UI', system-ui, sans-serif; }
         .admin-layout { display: flex; }
@@ -518,7 +519,16 @@ document.getElementById('btnKonfirmasiBatal').addEventListener('click', function
 // KONFIRMASI TUNAI
 // ==========================================
 function confirmCash(orderId, btn) {
-    if (!confirm('Konfirmasi bahwa uang tunai sudah diterima dari pelanggan?')) return;
+    Swal.fire({
+        title: 'Konfirmasi Tunai',
+        text: 'Konfirmasi bahwa uang tunai sudah diterima dari pelanggan?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ea580c',
+        confirmButtonText: 'Ya, Diterima',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (!result.isConfirmed) return;
 
     btn.disabled = true;
     btn.textContent = 'Memproses...';
@@ -545,8 +555,8 @@ function confirmCash(orderId, btn) {
     })
     .catch(() => {
         showToast('Terjadi kesalahan jaringan.', true);
-        btn.disabled = false;
         btn.textContent = 'Konfirmasi Terima Uang';
+    });
     });
 }
 
@@ -588,7 +598,16 @@ document.getElementById('btnKonfirmasiKembali').addEventListener('click', functi
 // HAPUS
 // ==========================================
 function hapusPesanan(orderId) {
-    if (!confirm('Hapus pesanan ini dari daftar?')) return;
+    Swal.fire({
+        title: 'Hapus Pesanan?',
+        text: 'Hapus pesanan ini dari daftar?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc2626',
+        confirmButtonText: 'Ya, Hapus',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (!result.isConfirmed) return;
 
     fetch(`/admin/orders/${orderId}`, {
         method: 'DELETE',
@@ -607,6 +626,7 @@ function hapusPesanan(orderId) {
         }
     })
     .catch(() => showToast('Terjadi kesalahan jaringan.', true));
+    });
 }
 
 @if($tab === 'aktif')

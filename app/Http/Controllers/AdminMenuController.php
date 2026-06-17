@@ -79,7 +79,7 @@ class AdminMenuController extends Controller
                     {$csrfToken}
                     <button type='submit' class='toggle-switch {$toggleOn}'
                         title='{$toggleTitle} menu'
-                        onclick=\"return confirm('{$confirmMsg} menu {$menu->name}?')\">
+                        onclick=\"event.preventDefault(); Swal.fire({title: '{$confirmMsg} menu {$menu->name}?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#451a03', confirmButtonText: 'Ya', cancelButtonText: 'Batal'}).then((result) => { if (result.isConfirmed) { this.closest('form').submit(); } })\">
                         <span class='toggle-thumb'></span>
                     </button>
                 </form>

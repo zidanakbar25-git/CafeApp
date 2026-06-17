@@ -124,6 +124,7 @@
 </style>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <aside class="sidebar-wrapper">
     <div>
@@ -200,7 +201,7 @@
         <form id="sidebar-logout-form"
               action="{{ route('logout') }}"
               method="POST"
-              onsubmit="return confirm('Apakah Anda yakin ingin keluar?')">
+              onsubmit="event.preventDefault(); Swal.fire({title: 'Apakah Anda yakin ingin keluar?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', confirmButtonText: 'Ya, Keluar', cancelButtonText: 'Batal'}).then((result) => { if (result.isConfirmed) { this.submit(); } })">
             @csrf
             <button type="submit" class="btn-logout-sidebar">
                 <i class="fa-solid fa-arrow-right-from-bracket fa-flip-horizontal"></i>
