@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 
 class HistoryController extends Controller
 {
-    public function index(Request $request){
+    public function index(Request $request)
+    {
         $query = Order::with(['orderDetails.menu', 'payments'])
             ->whereIn('status', ['selesai', 'dibatalkan']);
 
@@ -17,8 +18,8 @@ class HistoryController extends Controller
 
             $query->where(function ($q) use ($search) {
                 $q->where('order_code', 'like', "%{$search}%")
-                ->orWhere('customer_name', 'like', "%{$search}%")
-                ->orWhere('table_id', 'like', "%{$search}%");
+                    ->orWhere('customer_name', 'like', "%{$search}%")
+                    ->orWhere('table_id', 'like', "%{$search}%");
             });
         }
 
@@ -44,8 +45,18 @@ class HistoryController extends Controller
             });
         }
 
-        $orders = $query->latest()->get();
+        // Hitung ringkasan dari SELURUH hasil filter, bukan cuma 1 halaman
+        $totalCount      = (clone $query)->count();
+        $selesaiCount    = (clone $query)->where('status', 'selesai')->count();
+        $dibatalkanCount = (clone $query)->where('status', 'dibatalkan')->count();
 
-        return view('admin.history.History', compact('orders'));
+        $orders = $query->latest()->paginate(10)->withQueryString();
+
+        return view('admin.history.History', compact(
+            'orders',
+            'totalCount',
+            'selesaiCount',
+            'dibatalkanCount'
+        ));
     }
 }

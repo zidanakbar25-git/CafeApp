@@ -215,6 +215,67 @@
         .summary-bar strong {
             color: #0b1533;
         }
+
+        .pagination-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 14px 28px;
+    background: #fff;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.pagination-info {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.page-btn {
+    min-width: 32px;
+    height: 32px;
+    padding: 0 10px;
+    border-radius: 20px;
+    border: 1px solid #d1d5db;
+    background: #fff;
+    color: #374151;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background .15s, color .15s, border-color .15s;
+}
+
+.page-btn:hover {
+    background: #f3f4f6;
+    color: #0b1533;
+    text-decoration: none;
+}
+
+.page-btn.active {
+    background: #0b1533;
+    border-color: #0b1533;
+    color: #fff;
+}
+
+.page-btn.disabled {
+    opacity: .4;
+    pointer-events: none;
+    cursor: default;
+}
+
+
     </style>
 </head>
 
@@ -348,54 +409,83 @@
                             </form>
 
                             <!-- Summary bar -->
-                            <div class="summary-bar">
-                                <span>
-                                    Total:
-                                    <strong>{{ $orders->count() }} pesanan</strong>
-                                </span>
+<div class="summary-bar">
+    <span>
+        Total:
+        <strong>{{ $totalCount }} pesanan</strong>
+    </span>
 
-                                <span>
-                                    Selesai:
-                                    <strong>{{ $orders->where('status','selesai')->count() }}</strong>
-                                </span>
+    <span>
+        Selesai:
+        <strong>{{ $selesaiCount }}</strong>
+    </span>
 
-                                <span>
-                                    Dibatalkan:
-                                    <strong>{{ $orders->where('status','dibatalkan')->count() }}</strong>
-                                </span>
+    <span>
+        Dibatalkan:
+        <strong>{{ $dibatalkanCount }}</strong>
+    </span>
 
-                                @if(request('search'))
-                                <span style="color:#6b7280;">
-                                    Hasil pencarian:
-                                    "<strong>{{ request('search') }}</strong>"
-                                </span>
-                                @endif
+    @if(request('search'))
+    <span style="color:#6b7280;">
+        Hasil pencarian:
+        "<strong>{{ request('search') }}</strong>"
+    </span>
+    @endif
 
-                                @if(request('status'))
-                                <span>
-                                    Status:
-                                    <strong>{{ ucfirst(request('status')) }}</strong>
-                                </span>
-                                @endif
+    @if(request('status'))
+    <span>
+        Status:
+        <strong>{{ ucfirst(request('status')) }}</strong>
+    </span>
+    @endif
 
-                                @if(request('payment'))
-                                <span>
-                                    Pembayaran:
-                                    <strong>{{ strtoupper(request('payment')) }}</strong>
-                                </span>
-                                @endif
+    @if(request('payment'))
+    <span>
+        Pembayaran:
+        <strong>{{ strtoupper(request('payment')) }}</strong>
+    </span>
+    @endif
 
-                                @if(request('start_date') || request('end_date'))
-                                <span>
-                                    Periode:
-                                    <strong>
-                                        {{ request('start_date') ?: '-' }}
-                                        s/d
-                                        {{ request('end_date') ?: '-' }}
-                                    </strong>
-                                </span>
-                                @endif
-                            </div>
+    @if(request('start_date') || request('end_date'))
+    <span>
+        Periode:
+        <strong>
+            {{ request('start_date') ?: '-' }}
+            s/d
+            {{ request('end_date') ?: '-' }}
+        </strong>
+    </span>
+    @endif
+</div>
+
+<!-- Pagination (di atas, biar gak perlu scroll) -->
+@if($orders->hasPages())
+<div class="pagination-bar">
+    
+    <div class="pagination-controls">
+        @if ($orders->onFirstPage())
+            <span class="page-btn disabled">&laquo; Prev</span>
+        @else
+            <a href="{{ $orders->previousPageUrl() }}" class="page-btn">&laquo; Prev</a>
+        @endif
+
+        @foreach ($orders->getUrlRange(max(1, $orders->currentPage() - 2), min($orders->lastPage(), $orders->currentPage() + 2)) as $page => $url)
+            @if ($page == $orders->currentPage())
+                <span class="page-btn active">{{ $page }}</span>
+            @else
+                <a href="{{ $url }}" class="page-btn">{{ $page }}</a>
+            @endif
+        @endforeach
+
+        @if ($orders->hasMorePages())
+            <a href="{{ $orders->nextPageUrl() }}" class="page-btn">Next &raquo;</a>
+        @else
+            <span class="page-btn disabled">Next &raquo;</span>
+        @endif
+    </div>
+</div>
+@endif
+
 
                             <!-- Table -->
                             @if($orders->isEmpty())
